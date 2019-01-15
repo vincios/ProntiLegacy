@@ -1,0 +1,76 @@
+.evidenzia {
+    position: relative;
+    display: inline;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* The actual popup */
+.evidenzia .colorPopup{
+    visibility: hidden;
+    width: 160px;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    background-color: antiquewhite;
+    z-index: 1;
+    bottom: 130%;
+    margin-left: -80px;
+    margin-right: 50px;
+    box-shadow: -2px -2px 5px lightgray;
+}
+
+/*@supports (-moz-appearance:none) {
+    .evidenzia .colorPopup{
+        width: 160px;
+        bottom: 130%;
+        margin-left: -90px;
+        margin-right: 50px;
+        box-shadow: -2px -2px 5px lightgray;
+    }
+}*/
+
+@-moz-document url-prefix() {
+    .evidenzia .colorPopup{
+        width: 160px;
+        bottom: 130%;
+        margin-left: -90px;
+        margin-right: 50px;
+        box-shadow: -2px -2px 5px lightgray;
+    }
+}
+
+/* Popup arrow */
+.evidenzia .colorPopup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 90%;
+    margin-left: -5px;
+    border: 5px solid transparent;
+    border-top-color: antiquewhite;
+}
+
+/* Toggle this class - hide and show the popup */
+.evidenzia .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 400ms;
+    animation: fadeIn 400ms;
+}
+
+
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}

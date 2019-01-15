@@ -1,0 +1,32 @@
+.header {
+    border-radius: 5px;
+    height: 30px;
+}
+
+
+
+.header td{
+    background-color: #8ddcbb;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    height: 100%;
+}
+
+.header td a {
+    display: inline-block;
+    padding: 0;
+    vertical-align: middle;
+    text-align: center;
+    width:100%;
+    height: auto;
+}
+
+.header td:hover {
+    background-color: #ed876e;
+    cursor: pointer;
+}
+.header td.selected {
+    background-color: #7e80cc;
+    font-weight: bold;
+}
