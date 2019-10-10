@@ -65,7 +65,7 @@ function getHeader($currentCategory) {
         )
     );
 
-    $header = "<ul>";
+    $header = "<ul class='header'>";
 
 
     foreach ($categories as $key => $category) {

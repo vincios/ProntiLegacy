@@ -3,20 +3,22 @@ include("include/conn.php");
 include("include/libreria.php");
 include("include/color_picker_block.php");
 include("include/header.php");
+include("include/legend_functions.php");
 
 VerificaUtente(); //Verifico se l'utente connesso è un utente autorizzato
 
 $fileName = basename(__FILE__, ".php");
 
 $today = getdate();
-$date = $today['mday'] . " " . $today['month'];
-
+$dateStr = $today['mday'] . " " . $today['month'];
+$dateNumber = $today['year'] . "-" . $today['mon'] . "-" . $today['mday'];
 $archivio = isset($_REQUEST['archivio']);
 
 if($archivio) {
     $dataArchvio = $_REQUEST['archivio'];
-    $date = date('d-m-Y', strtotime($dataArchvio));
+    $dateNumber = $dataArchvio;
 
+    $dateStr = date('d-m-Y', strtotime($dataArchvio));
     $query = "SELECT *
  FROM (
 	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.note,d.indirizzo,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
@@ -30,7 +32,6 @@ if($archivio) {
 ORDER by deposito,ceramica,cliente";
 } else {
     $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.quintali,prontidepositi.note,depositi.indirizzo,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=0 ORDER by deposito,ceramica,cliente";
-
 }
 
 $ris = mysqli_query($db, $query) or die(mysqli_error($db));
@@ -40,6 +41,7 @@ $tot = 0;
 $tot_complessivo = 0;
 $i = 0;
 ?>
+
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -100,10 +102,13 @@ if($archivio) {
 <div class="page-content">
     <table width="100%" height="80" border="0">
         <tr>
-            <td width="49%">
-                <div align="center" class="Titolo roboto-font underlined">DEPOSITI : <? print $date ?></div>
+            <td width="40%">
+                <div align="center" class="Titolo roboto-font underlined">DEPOSITI : <? print $dateStr ?></div>
             </td>
-            <td width="19%" class="archivio-hidden">
+            <td width="25%">
+                <? echo getLegend($db, $fileName, $dateNumber); ?>
+            </td>
+            <td width="15%" class="archivio-hidden">
                 <form id="frmEliminaEvidenziati" name="frmEliminaEvidenziati" method="post" action="functionEliminaProntiDepositiEvidenziati.php">
                     <table>
                         <tr>
@@ -142,12 +147,12 @@ if($archivio) {
                     </table>
                 </form>
             </td>
-            <td width="12%" class="archivio-hidden">
+            <td width="10%" class="archivio-hidden">
                 <form name="form1" method="post" action="ricercadepositi.php">
                     <input type="submit" name="Submit" value="Ricerca">
                 </form>
             </td>
-            <td width="20%" class="archivio-hidden">
+            <td width="10%" class="archivio-hidden">
                 <form name="form1" method="post" action="inserisciProntoDepositi.php">
                     <input type="submit" name="Submit" value="Inserisci Pronto">
                 </form>
@@ -166,8 +171,7 @@ if($archivio) {
             <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
             <th width="45" align="center"></th>
         </tr>
-        <? while ($i <= $num) {
-            $array = mysqli_fetch_array($ris);
+        <? while ($array = mysqli_fetch_array($ris)) {
             $id = $array['id'];
             @$ceramica2 = $ceramica;
             @$deposito2 = $deposito;
@@ -205,83 +209,42 @@ if($archivio) {
                 </tr>
                 <?
                 @$tot = $tot + $quintali;
-                if (trim($ceramica) != trim($ceramica2)) {
+                ?>
+                <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
+                    <td width="210" bordercolor="999999" style="font-size:12px "><strong><a
+                                    href="gestioneProntoDeposito.php?nome=<? print $deposito ?>"><? print $deposito ?></a></strong><br><? print $indirizzo ?></br>
+                    </td>
+                    <td width="180" bordercolor="999999" style="font-size:12px "><? print $ceramica ?></td>
+                    <td class = "colorable"  width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px "><a
+                                href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td class = "colorable"  width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px"
+                        align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
+                    <td class="row-actions" width="45" align="center" bordercolor="999999">
+                        <a href="cancellaProntoDepositi.php?id=<? print $id ?>">
+                            <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
+                        </a>
 
-                    ?>
-                    <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="210" bordercolor="999999" style="font-size:12px "><strong><a
-                                        href="gestioneProntoDeposito.php?nome=<? print $deposito ?>"><? print $deposito ?></a></strong><br><? print $indirizzo ?></br>
-                        </td>
-                        <td width="180" bordercolor="999999" style="font-size:12px "><? print $ceramica ?></td>
-                        <td class = "colorable"  width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px "><a
-                                    href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
-                        <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px" align="center"><? print $quintali ?></td>
-                        <td class = "colorable"  width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px"
-                            align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class="row-actions" width="45" align="center" bordercolor="999999">
-                            <a href="cancellaProntoDepositi.php?id=<? print $id ?>">
-                                <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
+                        <?
+                        if($deposito != "AA DEP.MOLISE") {
+                            ?>
+                            <!--SPOSTA CERAMICA TO DEPOSITO-->
+                            <a href="functionMoveProntoToDeposito.php?id=<? print $id ?>&from=<?php echo $fileName ?>&to=AA%20DEP.MOLISE&redirectUrl=<?print $_SERVER['PHP_SELF']?>">
+                                <img class="" src="img/next.png" width="16" height="16" border="0">
                             </a>
+                        <? } ?>
 
-                            <?
-                            if($deposito != "AA DEP.MOLISE") {
-                                ?>
-                                <!--SPOSTA CERAMICA TO DEPOSITO-->
-                                <a href="functionMoveProntoToDeposito.php?id=<? print $id ?>&from=<?php echo $fileName ?>&to=AA%20DEP.MOLISE&redirectUrl=<?print $_SERVER['PHP_SELF']?>">
-                                    <img class="" src="img/next.png" width="16" height="16" border="0">
-                                </a>
-                            <? } ?>
-
-                            <div class="evidenzia">
-                                <img src="img/seleziona.jpg" width="16" height="16" border="0">
-                                <?php print getColorPicker($fileName, $id); ?>
-                            </div>
-                        </td>
-                        <td <?php if ($colore != "") echo("bgcolor=\"$colore\" ") ?> width="3"></td>
-                    </tr>
-                    <?
-                } else {
-                    ?>
-                    <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="210" bordercolor="999999" style="font-size:12px "><strong><a
-                                        href="gestioneProntoDeposito.php?nome=<? print $deposito ?>"><? print $deposito ?></a></strong>
-                        </td>
-                        </td>
-                        <td width="180" bordercolor="999999"></td>
-                        <td class = "colorable"  width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px "><a
-                                    href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
-                        <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px" align="center"><? print $quintali ?></td>
-                        <td class = "colorable"  width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px"
-                            align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class="row-actions" width="45" align="center" bordercolor="999999">
-                            <a href="cancellaProntoDepositi.php?id=<? print $id ?>">
-                                <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
-                            </a>
-
-                            <?
-                            if($deposito != "AA DEP.MOLISE") {
-                                ?>
-                                <!--SPOSTA CERAMICA TO DEPOSITO-->
-                                <a href="functionMoveProntoToDeposito.php?id=<? print $id ?>&from=<?php echo $fileName ?>&to=AA%20DEP.MOLISE&redirectUrl=<?print $_SERVER['PHP_SELF']?>">
-                                    <img class="" src="img/next.png" width="16" height="16" border="0">
-                                </a>
-                            <? } ?>
-
-                            <div class="evidenzia">
-                                <img src="img/seleziona.jpg" width="16" height="16" border="0">
-                                <?php print getColorPicker($fileName, $id); ?>
-                            </div>
-                        </td>
-                        <td <?php if ($colore != "") echo("bgcolor=\"$colore\" ") ?> width="3"></td>
-                    </tr>
-                    <?
-                }
+                        <div class="evidenzia">
+                            <img src="img/seleziona.jpg" width="16" height="16" border="0">
+                            <?php print getColorPicker($fileName, $id); ?>
+                        </div>
+                    </td>
+                    <td <?php if ($colore != "") echo("bgcolor=\"$colore\" ") ?> width="3"></td>
+                </tr>
+                <?
             } else {
                 @$tot = $tot + $quintali;
                 if (trim($ceramica) != trim($ceramica2)) {
@@ -371,8 +334,9 @@ if($archivio) {
         </tr>
     </table>
 </div>
+<?php echo getEditLegendModal($fileName, $dateNumber, $_SERVER['PHP_SELF']); ?>
 <!-- Add listener to elements-->
-<script type="application/javascript" src="js/main_pages_loading.js" defer>
-</script>
+<script type="application/javascript" src="js/main_pages_loading.js" defer></script>
+<script type="application/javascript" src="js/edit_legend_modal.js" defer></script>
 </body>
 </html>

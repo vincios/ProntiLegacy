@@ -74,7 +74,7 @@ function selectColorCheckboxes() {
 
     let labels = document.getElementsByClassName("material-checkbox");
 
-    for(i = 0; i < labels.length; i++) {
+    for(let i = 0; i < labels.length; i++) {
         labels[i].firstElementChild.setAttribute("checked", "checked");
     }
 }

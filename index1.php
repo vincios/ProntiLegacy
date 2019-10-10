@@ -2,6 +2,7 @@
 	include("include/conn.php");
 	include("include/header.php");
 	include("auth.php");
+	include("include/libreria.php");
 	
     if (isset($_COOKIE['USERNAME']) && isset($_COOKIE['PASSWORD']))
     {
@@ -69,5 +70,22 @@ a:active {
     <td height="100"><div align="center"><strong><span class="Stile1">BENVENUTO </span></strong></div></td>
   </tr>
 </table>
+
+<?php
+$query = "SELECT version FROM dbversion";
+$res = mysqli_query($db, $query);
+$res = mysqli_fetch_assoc($res);
+
+if($res === null) {
+    printError("Impossibile ottenere versione database");
+} else {
+    $version = $res['version'];
+    if($version != 2) {
+        printError("La versione del database non corrisponde. E' possibilie continuare a utilizzare l'applicazione
+         ma si potrebbero riscontrare errori");
+    }
+}
+
+?>
 </body>
 </html>

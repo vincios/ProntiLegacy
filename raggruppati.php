@@ -3,19 +3,22 @@ include("include/conn.php");
 include("include/libreria.php");
 include("include/color_picker_block.php");
 include("include/header.php");
+include("include/legend_functions.php");
 
 VerificaUtente(); //Verifico se l'utente connesso è un utente autorizzato
 
 $fileName = basename(__FILE__, ".php");
 
 $today = getdate();
-$date = $today['mday'] . " " . $today['month'];
+$dateStr = $today['mday'] . " " . $today['month'];
+$dateNumber = $today['year'] . "-" . $today['mon'] . "-" . $today['mday'];
 
 $archivio = isset($_REQUEST['archivio']);
 
 if($archivio) {
     $dataArchvio = $_REQUEST['archivio'];
-    $date = date('d-m-Y', strtotime($dataArchvio));
+    $dateNumber = $dataArchvio;
+    $dateStr = date('d-m-Y', strtotime($dataArchvio));
 
     $query = "SELECT * FROM (
                 SELECT * FROM prontiraggruppati pr JOIN ceramica c
@@ -95,10 +98,13 @@ if($archivio) {
 <div class="page-content">
     <table width="100%" height="80" border="0">
         <tr>
-            <td width="49%">
-                <div align="center" class="Titolo roboto-font underlined">RAGGRUPPATI : <? print $date ?></div>
+            <td width="40%">
+                <div align="center" class="Titolo roboto-font underlined">RAGGRUPPATI : <? print $dateStr ?></div>
             </td>
-            <td width="19%" class="archivio-hidden">
+            <td width="25%">
+                <? echo getLegend($db, $fileName, $dateNumber); ?>
+            </td>
+            <td width="15%" class="archivio-hidden">
                 <form id="frmEliminaEvidenziati" name="frmEliminaEvidenziati" method="post" action="functionEliminaProntiRaggruppatiEvidenziati.php">
                     <table>
                         <tr>
@@ -137,12 +143,12 @@ if($archivio) {
                     </table>
                 </form>
             </td>
-            <td width="12%" class="archivio-hidden">
+            <td width="10%" class="archivio-hidden">
                 <form name="form1" method="post" action="ricercaraggruppati.php">
                     <input type="submit" name="Submit" value="Ricerca">
                 </form>
             </td>
-            <td width="20%" class="archivio-hidden">
+            <td width="10%" class="archivio-hidden">
                 <form name="form1" method="post" action="inserisciProntoRaggruppati.php">
                     <input type="submit" name="Submit" value="Inserisci Pronto">
                 </form>
@@ -161,8 +167,7 @@ if($archivio) {
             <th width="150" bordercolor="999999" align="center"><strong>Note</strong></th>
             <th width="45" align="center"></th>
         </tr>
-        <? while ($i <= $num) {
-            $array = mysqli_fetch_array($ris);
+        <? while ($array = mysqli_fetch_array($ris)) {
             $id = $array['id'];
             @$ceramica2 = $ceramica;
             @$idgruppo2 = $idgruppo;
@@ -370,7 +375,9 @@ if($archivio) {
     </table>
 
 </div>
+<?php echo getEditLegendModal($fileName, $dateNumber, $_SERVER['PHP_SELF']); ?>
 <!-- Add listener to elements-->
+<script type="application/javascript" src="js/edit_legend_modal.js" defer></script>
 <script type="application/javascript" src="js/main_pages_loading.js" defer></script>
 </body>
 </html>

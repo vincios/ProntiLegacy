@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
 /**** HEADER STYLE RULES START ****/
-ul {
+ul.header {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -193,6 +193,122 @@ input[type=submit]:disabled::after {
 
 /**** SUBMIT BUTTONS STYLE RULES END ****/
 
+/**** LEGEND STYLE RULES START ****/
+span.legend {
+    display: block;
+    width: 100%;
+    align-content: start;
+    font-size: 12px;
+    padding-bottom: 3px;
+    margin-bottom: 1px;
+}
+span.legend::before {
+    content: "\25BA";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+    font-weight: bold; /* If you want it to be bold */
+    display: inline-block; /* Needed to add space between the bullet and the text */
+    width: 20px; /* Also needed for space (tweak if needed) */
+    margin-left: -1em; /* Also needed for space (tweak if needed) */
+    font-size: 15px;
+}
+span.legend.blue::before {
+    color: #1e90ff;
+}
+span.legend.green::before {
+    color: #00fa9a;
+}
+span.legend.red::before {
+    color: #ff4500;
+}
+span.legend.yellow::before {
+    color: #FFCC33;
+}
+/**** LEGEND STYLE RULES END ****/
+
+/**** EDIT LEGEND MODAL RULES START ****/
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.modal-close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #8ddcbb;
+    color: white;
+}
+
+.modal-body {
+    display: inline-block;
+    padding: 10px;
+}
+
+.modal-footer {
+    align-content: end;
+    padding: 6px 16px;
+    background-color: white;
+    color: white;
+}
+
+.edit-legend-form {
+    text-align: center;
+}
+
+.modal-content.legend {
+    width: 30%;
+}
+
+/**** EDIT LEGEND MODAL RULES END ****/
+
 html {}
 
 body{
@@ -200,7 +316,7 @@ body{
 }
 
 .page-content {
-    padding: 10px;
+    padding: 0 10px;
 }
 
 .centered {
@@ -248,4 +364,12 @@ tr.data-row-del>.colorable {
     font-style: italic;
     font-weight: bold;
     text-decoration: line-through;
+}
+
+.clearfix:after {
+    content: ".";
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
 }

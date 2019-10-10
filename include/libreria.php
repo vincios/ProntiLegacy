@@ -1,5 +1,5 @@
 <?php
-include("auth.php");
+include_once("auth.php");
 
 //LIBRERIA DI FUNZIONI PHP PER TRASPORTI MENZIONE
 $COLORE_SEL = array('#FFF', '#FFCC33', '#ff4500', '#1e90ff', '#00fa9a'); //COLORE PER LA SELEZIONE DELLE RIGHE
@@ -50,10 +50,13 @@ function VerificaUtente(){
 }
 
 //news
-function printError($error, $redirectUrl) {
+function printError($error, $redirectUrl = null) {
     print "<h3>" . $error . "</h3>";
     print "<br>";
-    print "<a href=\"" . $redirectUrl . "\"> Torna indietro </a>";
+
+    if($redirectUrl) {
+        print "<a href=\"" . $redirectUrl . "\"> Torna indietro </a>";
+    }
 }
 
 ?>
