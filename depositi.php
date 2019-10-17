@@ -21,17 +21,17 @@ if($archivio) {
     $dateStr = date('d-m-Y', strtotime($dataArchvio));
     $query = "SELECT *
  FROM (
-	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.note,d.indirizzo,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
+	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.palette,pd.note,d.indirizzo,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
 	FROM prontidepositi pd JOIN depositi d
 	WHERE pd.deposito=d.nome and pd.eliminato=0 and date(pd.data_aggiunta) <= '$dataArchvio'
 	UNION
-	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.note,d.indirizzo,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
+	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.palette,pd.note,d.indirizzo,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
 	FROM prontidepositi pd JOIN depositi d
 	WHERE pd.deposito=d.nome and pd.eliminato=1 and ('$dataArchvio' between date(pd.data_aggiunta) and pd.data_eliminazione)
 ) AS T1
 ORDER by deposito,ceramica,cliente";
 } else {
-    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.quintali,prontidepositi.note,depositi.indirizzo,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=0 ORDER by deposito,ceramica,cliente";
+    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=0 ORDER by deposito,ceramica,cliente";
 }
 
 $ris = mysqli_query($db, $query) or die(mysqli_error($db));
@@ -164,12 +164,13 @@ if($archivio) {
     </table>
     <table id="datarow-table" width="100%" border="0" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
         <tr>
-            <th width="200" bordercolor="999999" align="center"><strong>Deposito</strong></th>
+            <th width="210" bordercolor="999999" align="center"><strong>Deposito</strong></th>
             <th width="180" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
             <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
             <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+            <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
             <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
-            <th width="45" align="center"></th>
+            <th width="55" align="center"></th>
         </tr>
         <? while ($array = mysqli_fetch_array($ris)) {
             $id = $array['id'];
@@ -179,6 +180,7 @@ if($archivio) {
             $ceramica = $array['Ceramica'];
             $cliente = $array['Cliente'];
             $quintali = $array['quintali'];
+            $palette = $array['palette'];
             $note = $array['note'];
             $indirizzo = $array['indirizzo'];
             $sel = $array['selezionato'];
@@ -193,6 +195,7 @@ if($archivio) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td></td>
                     <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                         <strong><? print "TOT : " . $tot ?></strong></td>
@@ -201,6 +204,7 @@ if($archivio) {
                 $cont = 0;
                 $tot = 0; ?>
                 <tr bordercolor="FFFFFF">
+                    <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -220,10 +224,12 @@ if($archivio) {
                                 href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td class = "colorable"  width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                    <td class="row-actions" width="45" align="center" bordercolor="999999">
+                    <td class="row-actions" width="55" align="center" bordercolor="999999">
                         <a href="cancellaProntoDepositi.php?id=<? print $id ?>">
                             <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
                         </a>
@@ -259,10 +265,12 @@ if($archivio) {
                                     href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                         <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class = "colorable"  width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class="row-actions" width="45" align="center" bordercolor="999999">
+                        <td class="row-actions" width="55" align="center" bordercolor="999999">
                             <a href="cancellaProntoDepositi.php?id=<? print $id ?>">
                                 <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
                             </a>
@@ -294,10 +302,12 @@ if($archivio) {
                                     href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                         <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class = "colorable" width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class="row-actions" width="45" align="center" bordercolor="999999">
+                        <td class="row-actions" width="55" align="center" bordercolor="999999">
                             <a href="cancellaProntoDepositi.php?id=<? print $id ?>">
                                 <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
                             </a>

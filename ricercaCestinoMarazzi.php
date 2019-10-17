@@ -22,7 +22,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $Al_mese = strtok('-');
     $Al_anno = substr($Al, -4);
 
-    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by deposito,cliente,dds";
+    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by deposito,cliente,dds";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -38,7 +38,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         echo("La data deve essere specificata nel formato gg-mm-aaaa!");
         exit;
     }
-    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by deposito,cliente,dds";
+    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by deposito,cliente,dds";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -129,11 +129,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
         <th width="165" bordercolor="999999" align="center"><strong>D.D.S</strong></th>
         <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+        <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
         <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
         <th width="25" align="center"></th>
     </tr>
-    <? while ($i <= $num) {
-        $array = mysqli_fetch_array($ris);
+    <? while ($array = mysqli_fetch_array($ris)) {
         $id = $array['id'];
         @$cliente2 = $cliente;
         @$deposito2 = $deposito;
@@ -141,6 +141,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $cliente = $array['Cliente'];
         $dds = $array['dds'];
         $quintali = $array['quintali'];
+        $palette = $array['palette'];
         $note = $array['note'];
         $indirizzo = $array['indirizzo'];
         $sel = $array['selezionato'];
@@ -155,6 +156,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                     <strong><? print "TOT : " . $tot ?></strong></td>
                 </tr><? }
@@ -162,6 +164,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
             $cont = 0;
             $tot = 0; ?>
             <tr bordercolor="FFFFFF">
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -184,6 +187,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                         style="font-size:12px "><? print $dds ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -209,6 +214,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                         style="font-size:12px"><? print $dds ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -236,6 +243,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                         style="font-size:12px "><? print $dds ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -259,6 +268,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                         style="font-size:12px "><? print $dds ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>

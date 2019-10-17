@@ -293,6 +293,14 @@ if($archivio) {
         </tr>
     </table>
     <table width="100%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
+        <tr>
+            <th width="170" bordercolor="999999" align="center">&nbsp;</th>
+            <th width="180" bordercolor="999999" align="center">&nbsp;</th>
+            <th width="70" bordercolor="999999" align="center">&nbsp;</th>
+            <th width="70" bordercolor="999999" align="center">&nbsp;</th>
+            <th width="150" bordercolor="999999" align="center">&nbsp;</th>
+            <th width="40" align="center"></th>
+        </tr>
         <? while ($array = mysqli_fetch_array($ris2)){
             $id = $array['id'];
             $idcer = $array['idcer'];
@@ -337,7 +345,6 @@ if($archivio) {
                 <?
                 if (trim($ceramica) != trim($ceramica2)){
                     ?>
-                    <tr id="datarow-<?php print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
                     <tr bordercolor="FFFFFF">
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -346,26 +353,27 @@ if($archivio) {
                         <td> </td>
                         <td align="center">&nbsp;</td>
                     </tr>
-                    <td width="180" bordercolor="999999" style="font-size:12px "><strong><a href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br></td>
-                    <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><a href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
-                    <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $quintali ?></td>
-                    <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $palette ?></td>
-                    <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center" <? if(($note=="URGENTE") || ($note=="TASSATIVO")) { ?> style="color:#FF0000" <? } ?>><? print $note ?></td>
-                    <td class="row-actions" align="center" bordercolor="999999"><a href="cancellaProntoCeramiche.php?id=<? print $id ?>">
-                            <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
-                        </a>
+                    <tr id="datarow-<?php print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
+                        <td width="180" bordercolor="999999" style="font-size:12px "><strong><a href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br></td>
+                        <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><a href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                        <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $palette ?></td>
+                        <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center" <? if(($note=="URGENTE") || ($note=="TASSATIVO")) { ?> style="color:#FF0000" <? } ?>><? print $note ?></td>
+                        <td class="row-actions" align="center" bordercolor="999999"><a href="cancellaProntoCeramiche.php?id=<? print $id ?>">
+                                <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
+                            </a>
 
-                        <!--SPOSTA CERAMICA TO DEPOSITO-->
-                        <a href="functionMoveProntoToDeposito.php?id=<? print $id ?>&from=<?php echo $fileName ?>&to=AA%20DEP.MOLISE&redirectUrl=<?print $_SERVER['PHP_SELF']?>">
-                            <img class="" src="img/next.png" width="16" height="16" border="0">
-                        </a>
+                            <!--SPOSTA CERAMICA TO DEPOSITO-->
+                            <a href="functionMoveProntoToDeposito.php?id=<? print $id ?>&from=<?php echo $fileName ?>&to=AA%20DEP.MOLISE&redirectUrl=<?print $_SERVER['PHP_SELF']?>">
+                                <img class="" src="img/next.png" width="16" height="16" border="0">
+                            </a>
 
-                        <div class="evidenzia">
-                            <img src="img/seleziona.jpg" width="16" height="16" border="0">
-                            <?php print getColorPicker($fileName, $id); ?>
-                        </div>
-                    </td>
-                    <td <?php if($colore!="") echo("bgcolor=\"$colore\" ") ?> width="3"></td>
+                            <div class="evidenzia">
+                                <img src="img/seleziona.jpg" width="16" height="16" border="0">
+                                <?php print getColorPicker($fileName, $id); ?>
+                            </div>
+                        </td>
+                        <td <?php if($colore!="") echo("bgcolor=\"$colore\" ") ?> width="3"></td>
                     </tr>
                     <?
                     @$tot=$tot+$quintali;

@@ -164,6 +164,7 @@ if($archivio) {
             <th width="180" bordercolor="999999" align="center"><strong>Materiale</strong></th>
             <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
             <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+            <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
             <th width="150" bordercolor="999999" align="center"><strong>Note</strong></th>
             <th width="45" align="center"></th>
         </tr>
@@ -175,6 +176,7 @@ if($archivio) {
             $ceramica = $array['Ceramica'];
             $cliente = $array['Cliente'];
             $quintali = $array['quintali'];
+            $palette = $array['palette'];
             $note = $array['note'];
             $idgruppo = $array['idgruppo'];
             $indirizzo = $array['indirizzo'];
@@ -191,6 +193,7 @@ if($archivio) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                         <strong><? print "TOT : " . $tot ?></strong></td>
                     </tr><? }
@@ -202,9 +205,11 @@ if($archivio) {
                     <td>______________</td>
                     <td>______________</td>
                     <td>_____</td>
+                    <td>_____</td>
                     <td>__________</td>
                 </tr>
                 <tr bordercolor="FFFFFF">
+                    <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -221,6 +226,7 @@ if($archivio) {
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
+                        <td>&nbsp;</td>
                         <td align="center">&nbsp;</td>
                     </tr>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
@@ -233,6 +239,8 @@ if($archivio) {
                                     href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                         <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class = "colorable" width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -264,6 +272,8 @@ if($archivio) {
                                     href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                         <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class="colorable" width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -295,6 +305,7 @@ if($archivio) {
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
+                        <td>&nbsp;</td>
                         <td align="center">&nbsp;</td>
                     </tr>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
@@ -307,6 +318,8 @@ if($archivio) {
                                     href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                         <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class="colorable" width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -338,6 +351,8 @@ if($archivio) {
                                     href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                         <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class="colorable" width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>

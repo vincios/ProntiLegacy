@@ -366,6 +366,9 @@ tr.data-row-del>.colorable {
     text-decoration: line-through;
 }
 
+th {
+    padding: 7px 0;
+}
 .clearfix:after {
     content: ".";
     visibility: hidden;

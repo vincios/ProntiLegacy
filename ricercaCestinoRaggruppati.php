@@ -125,11 +125,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         <th  width="180" bordercolor="999999" align="center"><strong>Materiale</strong></th>
         <th  width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
         <th  width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+        <th  width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
         <th  width="150" bordercolor="999999" align="center"><strong>Note</strong></th>
         <th  width="25" align="center"></th>
     </tr>
-    <? while ($i <= $num) {
-        $array = mysqli_fetch_array($ris);
+    <? while ($array = mysqli_fetch_array($ris)) {
         $id = $array['id'];
         @$ceramica2 = $ceramica;
         @$idgruppo2 = $idgruppo;
@@ -137,6 +137,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $ceramica = $array['Ceramica'];
         $cliente = $array['Cliente'];
         $quintali = $array['quintali'];
+        $palette = $array['palette'];
         $note = $array['note'];
         $idgruppo = $array['idgruppo'];
         $indirizzo = $array['indirizzo'];
@@ -152,6 +153,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                     <strong><? print "TOT : " . $tot ?></strong></td>
                 </tr><? }
@@ -163,9 +165,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>______________</td>
                 <td>______________</td>
                 <td>_____</td>
+                <td>_____</td>
                 <td>__________</td>
             </tr>
             <tr bordercolor="FFFFFF">
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -182,6 +186,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td align="center">&nbsp;</td>
                 </tr>
                 <tr>
@@ -194,6 +199,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                                 href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -216,6 +223,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                                 href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -238,6 +247,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td align="center">&nbsp;</td>
                 </tr>
                 <tr>
@@ -250,6 +260,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                                 href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -272,6 +284,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                                 href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
                     <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"
                         align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>

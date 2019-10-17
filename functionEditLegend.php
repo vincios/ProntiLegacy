@@ -6,10 +6,10 @@ $tableName = $_REQUEST['table'];
 $date = $_REQUEST['date'];
 $redirectUrl = $_REQUEST['redirectUrl'];
 
-$blueLegend = $_REQUEST['blueText'];
-$greenLegend = $_REQUEST['greenText'];
-$redLegend = $_REQUEST['redText'];
-$yellowLegend = $_REQUEST['yellowText'];
+$blueLegend = mysqli_escape_string($db, $_REQUEST['blueText']);
+$greenLegend = mysqli_escape_string($db, $_REQUEST['greenText']);
+$redLegend = mysqli_escape_string($db, $_REQUEST['redText']);
+$yellowLegend = mysqli_escape_string($db, $_REQUEST['yellowText']);
 
 $newLegend = array(
     'blue' => $blueLegend,

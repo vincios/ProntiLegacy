@@ -32,6 +32,7 @@ else
     $_REQUEST['ceramica'] = "";
     $_REQUEST['cliente'] = "";
     $_REQUEST['quintali'] = "";
+    $_REQUEST['palette'] = "";
     $_REQUEST['note'] = "";
 }
 ?>
@@ -93,19 +94,23 @@ else
             <td width="32%"><div align="right" class="Stile2">
                     <div align="right">Ceramica</div>
                 </div></td>
-            <td width="68%"><input type="text" name="ceramica" value="<? print $_REQUEST['ceramica'] ?>" maxlength="25"></td>
+            <td width="68%"><input type="text" name="ceramica" value="<? print $_REQUEST['ceramica'] ?>" maxlength="45"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Cliente</span></div></td>
-            <td><input type="text" name="cliente" value="<? print $_REQUEST['cliente'] ?>" maxlength="22"></td>
+            <td><input type="text" name="cliente" value="<? print $_REQUEST['cliente'] ?>" maxlength="45"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Quintali</span></div></td>
-            <td><input type="text" name="quintali" value="<? print $_REQUEST['quintali'] ?>" maxlength="10"></td>
+            <td><input type="text" name="quintali" value="<? print $_REQUEST['quintali'] ?>" maxlength="45"></td>
+        </tr>
+        <tr>
+            <td><div align="right"><span class="Stile2">Palette</span></div></td>
+            <td><input type="text" name="palette" value="<? print $_REQUEST['palette'] ?>" maxlength="45"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Note</span></div></td>
-            <td><input type="text" name="note" value="<? print $_REQUEST['note'] ?>" maxlength="20"></td>
+            <td><input type="text" name="note" value="<? print $_REQUEST['note'] ?>" maxlength="45"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2"></span></div></td>
@@ -127,9 +132,12 @@ if ($ok == 1){
     $n = mysqli_affected_rows($db);
 
     if ($n > 0){
-        $_REQUEST['ceramica']=strtoupper($_REQUEST['ceramica']);
-        $_REQUEST['cliente']=strtoupper($_REQUEST['cliente']);
-        $query="insert into pronticeramiche (Ceramica,cliente,quintali,note) values(\"" . mysqli_escape_string($db, $_REQUEST['ceramica']) . "\",'". mysqli_escape_string($db, $_REQUEST['cliente']) ."','". mysqli_escape_string($db, $_REQUEST['quintali'])."','". mysqli_escape_string($db, $_REQUEST['note']) ."')";
+        $ceramica = mysqli_escape_string($db, strtoupper($_REQUEST['ceramica']));
+        $cliente = mysqli_escape_string($db, strtoupper($_REQUEST['cliente']));
+        $quintali = mysqli_escape_string($db, $_REQUEST['quintali']);
+        $palette = mysqli_escape_string($db, $_REQUEST['palette']);
+        $note = mysqli_escape_string($db, $_REQUEST['note']);
+        $query="insert into pronticeramiche (Ceramica,cliente,quintali,palette,note) values('$ceramica', '$cliente', '$quintali', '$palette', '$note')";
         mysqli_query($db, $query) or die (mysqli_error($db));
 
         print '	<script language="javascript">	

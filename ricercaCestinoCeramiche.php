@@ -135,18 +135,19 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         <th width="170" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
         <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
         <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+        <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
         <th width="150" bordercolor="999999" align="center"><strong>Note</strong></th>
         <th width="25" align="center"></th>
     </tr>
     <? $j = 0;
-    while ($i <= $num) {
-        $array = mysqli_fetch_array($ris);
+    while ($array = mysqli_fetch_array($ris)) {
         $id = $array['id'];
         $idcer = $array['idcer'];
         @$ceramica2 = $ceramica;
         $ceramica = $array['Ceramica'];
         $cliente = $array['cliente'];
         $quintali = $array['quintali'];
+        $palette = $array['palette'];
         $note = $array['note'];
         $indirizzo = $array['indirizzo'];
         $sel = $array['selezionato'];
@@ -162,6 +163,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td width="150" bordercolor="999999" style="font-size:12px" align="center">
                     <strong><? print "TOT : " . $tot ?></strong></td>
                 </tr><? }
@@ -169,6 +171,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
             $cont = 0;
             $tot = 0; ?>
             <tr bordercolor="FFFFFF">
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -183,6 +186,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                             href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                 <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px" align="center"><? print $quintali ?></td>
+                <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                    style="font-size:12px" align="center"><? print $palette ?></td>
                 <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px"
                     align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000"  <? } ?>><? print $note ?></td>
@@ -206,6 +211,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                             href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                 <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px" align="center"><? print $quintali ?></td>
+                <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                    style="font-size:12px" align="center"><? print $palette ?></td>
                 <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px"
                     align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000" <? } ?>><? print $note ?></td>
@@ -230,9 +237,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
+        <td>&nbsp;</td>
         <td align="center">&nbsp;</td>
     </tr>
     <tr bordercolor="FFFFFF">
+        <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -241,8 +250,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     </tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
-    <? while ($i <= $num2) {
-        $array = mysqli_fetch_array($ris2);
+    <? while ($array = mysqli_fetch_array($ris2)) {
         $id = $array['id'];
         $idcer = $array['idcer'];
         @$idgruppo2 = $idgruppo;
@@ -251,6 +259,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $ceramica = $array['Ceramica'];
         $cliente = $array['cliente'];
         $quintali = $array['quintali'];
+        $palette = $array['palette'];
         $note = $array['note'];
         $indirizzo = $array['indirizzo'];
         $sel = $array['selezionato'];
@@ -265,6 +274,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td width="150" bordercolor="999999" style="font-size:12px" align="center">
                     <strong><? print "TOT : " . $tot ?></strong></td>
                 </tr><? }
@@ -275,9 +285,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>___________________</td>
                 <td>___________________</td>
                 <td>________</td>
+                <td>________</td>
                 <td>________________</td>
             </tr>
             <tr bordercolor="FFFFFF">
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -292,6 +304,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td align="center">&nbsp;</td>
                 </tr>
                 <td width="180" bordercolor="999999" style="font-size:12px "><strong><a
@@ -302,6 +315,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                             href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                 <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px" align="center"><? print $quintali ?></td>
+                <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                    style="font-size:12px" align="center"><? print $palette ?></td>
                 <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px"
                     align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000" <? } ?>><? print $note ?></td>
@@ -325,6 +340,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                                 href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"><? print $quintali ?></td>
+                    <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px"><? print $palette ?></td>
                     <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000" <? } ?>><? print $note ?></td>
                     <td width="35" align="center" bordercolor="999999" class="row-actions"><a
@@ -344,6 +361,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td align="center">&nbsp;</td>
             </tr>
             <tr>
@@ -355,6 +373,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                             href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                 <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px" align="center"><? print $quintali ?></td>
+                <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                    style="font-size:12px" align="center"><? print $palette ?></td>
                 <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px"
                     align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000" <? } ?>><? print $note ?></td>
@@ -378,6 +398,8 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                             href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                 <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px" align="center"><? print $quintali ?></td>
+                <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                    style="font-size:12px" align="center"><? print $palette ?></td>
                 <td width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px"
                     align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000" <? } ?>><? print $note ?></td>

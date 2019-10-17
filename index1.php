@@ -80,7 +80,7 @@ if($res === null) {
     printError("Impossibile ottenere versione database");
 } else {
     $version = $res['version'];
-    if($version != 2) {
+    if($version != 3) {
         printError("La versione del database non corrisponde. E' possibilie continuare a utilizzare l'applicazione
          ma si potrebbero riscontrare errori");
     }

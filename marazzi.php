@@ -21,17 +21,17 @@ if($archivio) {
     $dateStr = date('d-m-Y', strtotime($dataArchvio));
 
     $query = "SELECT * FROM (
-                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.dds,pm.note,m.indirizzo,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
+                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
                                 FROM prontimarazzi pm JOIN marazzi m
                                 WHERE pm.deposito=m.nome and pm.eliminato=0 and date(pm.data_aggiunta) <= '$dataArchvio'
                                 UNION
-                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.dds,pm.note,m.indirizzo,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
+                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
                                 FROM prontimarazzi pm JOIN marazzi m
                                 WHERE pm.deposito=m.nome and pm.eliminato=1 and ('$dataArchvio' between date(pm.data_aggiunta) and pm.data_eliminazione)
                             ) AS T1
               ORDER by deposito,cliente,dds";
 } else {
-    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=0 ORDER by deposito,cliente,dds";
+    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=0 ORDER by deposito,cliente,dds";
 }
 $ris = mysqli_query($db, $query) or die(mysqli_error($db));
 $num = mysqli_num_rows($ris);
@@ -163,6 +163,7 @@ if($archivio) {
             <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
             <th width="165" bordercolor="999999" align="center"><strong>D.D.S</strong></th>
             <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+            <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
             <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
             <th width="45" align="center"></th>
         </tr>
@@ -174,6 +175,7 @@ if($archivio) {
             $cliente = $array['Cliente'];
             $dds = $array['dds'];
             $quintali = $array['quintali'];
+            $palette = $array['palette'];
             $note = $array['note'];
             $indirizzo = $array['indirizzo'];
             $sel = $array['selezionato'];
@@ -190,6 +192,7 @@ if($archivio) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                         <strong><? print "TOT : " . $tot ?></strong></td>
                     </tr><?
@@ -199,6 +202,7 @@ if($archivio) {
                 $tot = 0;
                 ?>
                 <tr bordercolor="FFFFFF">
+                    <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -222,6 +226,8 @@ if($archivio) {
                             style="font-size:12px"><? print $dds ?></td>
                         <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class = "colorable" width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -255,6 +261,8 @@ if($archivio) {
                             style="font-size:12px "><? print $dds ?></td>
                         <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class="colorable" width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
@@ -287,6 +295,8 @@ if($archivio) {
                             style="font-size:12px "><? print $dds ?></td>
                         <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
+                        <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                            style="font-size:12px" align="center"><? print $palette ?></td>
                         <td class="colorable" width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>

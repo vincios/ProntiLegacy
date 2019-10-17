@@ -89,11 +89,12 @@ if($prontoCeramica === null) {
 $prontoCeramica = mysqli_escape_string($db, $prontoCeramica);
 $prontoCliente = $from == "ceramiche" ? mysqli_escape_string($db, $res['cliente']) : mysqli_escape_string($db, $res['Cliente']);
 $prontoQuintali = mysqli_escape_string($db, $res['quintali']);
+$prontoPalette = mysqli_escape_string($db, $res['palette']);
 $prontoNote = mysqli_escape_string($db, $res['note']);
 $prontoSelezionato = intval($res['selezionato']);
 
-$query = "INSERT INTO prontidepositi(Deposito, Ceramica, Cliente, quintali, note, selezionato) VALUES " .
-    "('$to', '$prontoCeramica', '$prontoCliente', '$prontoQuintali', '$prontoNote', $prontoSelezionato)";
+$query = "INSERT INTO prontidepositi(Deposito, Ceramica, Cliente, quintali, palette, note, selezionato) VALUES " .
+    "('$to', '$prontoCeramica', '$prontoCliente', '$prontoQuintali', '$prontoPalette', '$prontoNote', $prontoSelezionato)";
 
 $res = mysqli_query($db, $query);
 
