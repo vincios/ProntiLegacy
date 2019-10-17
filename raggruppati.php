@@ -185,6 +185,8 @@ if($archivio) {
             $eliminato = isset($array['eliminato']) ? $array['eliminato'] : false;
             $cont++;
             $i++;
+
+            @$tot_complessivo += $quintali;
             if ($idgruppo != $idgruppo2) {
                 ?>
                 <? if ($cont > 1) { ?>
@@ -197,7 +199,6 @@ if($archivio) {
                     <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                         <strong><? print "TOT : " . $tot ?></strong></td>
                     </tr><? }
-                @$tot_complessivo += $tot;
                 $cont = 0;
                 $tot = 0; ?>
                 <tr bordercolor="#000000">

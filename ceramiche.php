@@ -192,6 +192,7 @@ if($archivio) {
             $cont++;
             $i++;
             $j++;
+            @$tot_complessivo+=$quintali;
             if (trim($ceramica) != trim($ceramica2)){
 
                 ?>
@@ -205,7 +206,7 @@ if($archivio) {
                     <td width="150" bordercolor="999999" style="font-size:12px" align="center"><strong><? print "TOT : ".$tot ?></strong></td>
                     </tr><?
                 }
-                @$tot_complessivo+=$tot; $cont=0; $tot=0;
+                $cont=0; $tot=0;
                 ?>
                 <tr bordercolor="FFFFFF">
                     <td>&nbsp;</td>
@@ -318,6 +319,7 @@ if($archivio) {
             $eliminato = $array['eliminato'];
             $cont++;
             $i++;
+            @$tot_complessivo+=$quintali;
             if ($idgruppo != $idgruppo2){
                 ?>
                 <? if ($cont>1) { ?>
@@ -327,7 +329,7 @@ if($archivio) {
                     <td>&nbsp;</td>
                     <td> </td>
                     <td width="150" bordercolor="999999" style="font-size:12px" align="center"><strong><? print "TOT : ".$tot ?></strong></td>
-                    </tr><? } @$tot_complessivo+=$tot; $cont=0; $tot=0;?>
+                    </tr><? } $cont=0; $tot=0;?>
                 <tr bordercolor="#000000">
                     <td>___________________</td>
                     <td>___________________</td>

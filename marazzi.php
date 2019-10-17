@@ -183,6 +183,8 @@ if($archivio) {
             $eliminato = isset($array['eliminato']) ? $array['eliminato'] : false;
             $cont++;
             $i++;
+
+            @$tot_complessivo += $quintali;
             if (trim($deposito) != trim($deposito2)) {
 //                $cliente2 = null;
                 ?>
@@ -197,7 +199,6 @@ if($archivio) {
                         <strong><? print "TOT : " . $tot ?></strong></td>
                     </tr><?
                 }
-                @$tot_complessivo += $tot;
                 $cont = 0;
                 $tot = 0;
                 ?>
