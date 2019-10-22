@@ -22,7 +22,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $Al_mese = strtok('-');
     $Al_anno = substr($Al, -4);
 
-    $query = "SELECT * FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by ceramica,cliente";
+    $query = "SELECT *, pronticeramiche.note as note, ceramica.note as noteCer FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by ceramica,cliente";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -30,7 +30,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $tot_complessivo = 0;
     $i = 0;
 
-    $query = "SELECT * FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by idgruppo,ceramica,cliente";
+    $query = "SELECT *, pronticeramiche.note as note, ceramica.note as noteCer FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by idgruppo,ceramica,cliente";
     $ris2 = mysqli_query($db, $query) or die(mysqli_error($db));
     $num2 = mysqli_num_rows($ris2);
 } elseif (isset($_GET['Giorno'])) {
@@ -42,7 +42,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         echo("La data deve essere specificata nel formato gg-mm-aaaa!");
         exit;
     }
-    $query = "SELECT * FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo=0 and 	ceramica.nome=pronticeramiche.ceramica and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by ceramica,cliente";
+    $query = "SELECT *, pronticeramiche.note as note, ceramica.note as noteCer FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo=0 and 	ceramica.nome=pronticeramiche.ceramica and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by ceramica,cliente";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -50,7 +50,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $tot_complessivo = 0;
     $i = 0;
 
-    $query = "SELECT * FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by idgruppo,ceramica,cliente";
+    $query = "SELECT *, pronticeramiche.note as note, ceramica.note as noteCer FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by idgruppo,ceramica,cliente";
     $ris2 = mysqli_query($db, $query) or die(mysqli_error($db));
     $num2 = mysqli_num_rows($ris2);
 } else {
@@ -150,8 +150,12 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $palette = $array['palette'];
         $note = $array['note'];
         $indirizzo = $array['indirizzo'];
+        $telefono = $array['telefono'];
+        $noteCer = $array['noteCer'];
         $sel = $array['selezionato'];
         $colore = $array['colore'];
+        $descrizione = makeDescriptionString($indirizzo, $telefono, $noteCer);
+
         $cont++;
         $i++;
         $j++;
@@ -179,7 +183,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
             </tr>
             <tr style="color:#FF0000">
                 <td width="180" bordercolor="999999" style="font-size:12px"><strong><a
-                                href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br>
+                                href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $descrizione ?></br>
                 </td>
                 <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px"><a
@@ -262,8 +266,12 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $palette = $array['palette'];
         $note = $array['note'];
         $indirizzo = $array['indirizzo'];
+        $telefono = $array['telefono'];
+        $noteCer = $array['noteCer'];
         $sel = $array['selezionato'];
         $colore = $array['colore'];
+        $descrizione = makeDescriptionString($indirizzo, $telefono, $noteCer);
+
         $cont++;
         $i++;
         if ($idgruppo != $idgruppo2) {
@@ -308,7 +316,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td align="center">&nbsp;</td>
                 </tr>
                 <td width="180" bordercolor="999999" style="font-size:12px "><strong><a
-                                href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br>
+                                href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $descrizione ?></br>
                 </td>
                 <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                     style="font-size:12px"><a

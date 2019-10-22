@@ -21,20 +21,22 @@ if($archivio) {
     $dateStr = date('d-m-Y', strtotime($dataArchvio));
 
     $query = "SELECT * FROM (
-                              select * from pronticeramiche pc
+                              select id, Ceramica, cliente, quintali, palette, selezionato, data_aggiunta, eliminato, data_eliminazione, idcer, nome, indirizzo, telefono, pc.note, c.note as noteCer, idgruppo, colore from pronticeramiche pc
                               JOIN ceramica c
                               WHERE c.idgruppo=0 and c.nome=pc.ceramica and pc.eliminato=0 and date(pc.data_aggiunta) <= '$dataArchvio'
                               UNION
-                              SELECT * from pronticeramiche pc
+                              SELECT id, Ceramica, cliente, quintali, palette, selezionato, data_aggiunta, eliminato, data_eliminazione, idcer, nome, indirizzo, telefono, pc.note, c.note as noteCer, idgruppo, colore from pronticeramiche pc
                               JOIN ceramica c
                               WHERE c.idgruppo=0 and c.nome=pc.ceramica and pc.eliminato=1 and ('$dataArchvio' between date(data_aggiunta) and data_eliminazione)
                             ) as T1
 		ORDER by ceramica,cliente";
 } else {
-    $query = "SELECT * FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=0 ORDER by ceramica,cliente";
+    $query = "SELECT id, Ceramica, cliente, quintali, palette, selezionato, data_aggiunta, eliminato, data_eliminazione, idcer, nome, indirizzo, telefono, pc.note, c.note as noteCer, idgruppo, colore FROM pronticeramiche pc JOIN ceramica c WHERE c.idgruppo=0 and c.nome=pc.ceramica and eliminato=0 ORDER by ceramica,cliente";
 }
 
 $ris = mysqli_query($db, $query) or die( mysqli_error($db) );
+$rows = mysqli_fetch_all($ris, MYSQLI_ASSOC);
+$ceramicheOccurrences = countSqlResultFieldOccurrence($rows, 'Ceramica');
 $num = mysqli_num_rows($ris);
 $cont=0;
 $tot=0;
@@ -43,20 +45,24 @@ $i=0;
 
 if($archivio) {
     $query =  "SELECT * FROM (
-                                SELECT * FROM pronticeramiche 
-                                JOIN ceramica 
-                                WHERE ceramica.idgruppo!=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=0 and date(pronticeramiche.data_aggiunta) <= '$dataArchvio' 
+                                SELECT id, Ceramica, cliente, quintali, palette, selezionato, data_aggiunta, eliminato, data_eliminazione, idcer, nome, indirizzo, telefono, pc.note, c.note as noteCer, idgruppo, colore 
+                                FROM pronticeramiche pc 
+                                JOIN ceramica c
+                                WHERE c.idgruppo!=0 and c.nome=pc.ceramica and eliminato=0 and date(pc.data_aggiunta) <= '$dataArchvio' 
                                 UNION
-                                SELECT * FROM pronticeramiche 
-                                JOIN ceramica 
-                                WHERE ceramica.idgruppo!=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=1 and ('$dataArchvio' between date(data_aggiunta) and data_eliminazione) 
+                                SELECT id, Ceramica, cliente, quintali, palette, selezionato, data_aggiunta, eliminato, data_eliminazione, idcer, nome, indirizzo, telefono, pc.note, c.note as noteCer, idgruppo, colore 
+                                FROM pronticeramiche pc 
+                                JOIN ceramica c
+                                WHERE c.idgruppo!=0 and c.nome=pc.ceramica and eliminato=1 and ('$dataArchvio' between date(data_aggiunta) and data_eliminazione) 
                               ) AS T1
                 ORDER by idgruppo,ceramica,cliente";
 } else {
-    $query = "SELECT * FROM pronticeramiche JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=pronticeramiche.ceramica and eliminato=0 ORDER by idgruppo,ceramica,cliente";
+    $query = "SELECT id, Ceramica, cliente, quintali, palette, selezionato, data_aggiunta, eliminato, data_eliminazione, idcer, nome, indirizzo, telefono, pc.note, c.note as noteCer, idgruppo, colore FROM pronticeramiche pc JOIN ceramica c WHERE c.idgruppo!=0 and c.nome=pc.ceramica and eliminato=0 ORDER by idgruppo,ceramica,cliente";
 }
 
 $ris2 = mysqli_query($db, $query) or die( mysqli_error($db) );
+$rows2 = mysqli_fetch_all($ris2, MYSQLI_ASSOC);
+$ceramicheOccurrences2 = countSqlResultFieldOccurrence($rows2, 'Ceramica');
 $num2 = mysqli_num_rows($ris2);
 
 ?>
@@ -176,7 +182,8 @@ if($archivio) {
             <th width="40" align="center"></th>
         </tr>
         <? $j=0;
-        while ($array = mysqli_fetch_array($ris)){
+        //                while ($array = mysqli_fetch_array($ris)){
+        foreach ($rows as $array) {
             $id = $array['id'];
             $idcer = $array['idcer'];
             @$ceramica2 = $ceramica; //ceramica2 = ceramica on previous iteration
@@ -186,9 +193,14 @@ if($archivio) {
             $palette = $array['palette'];
             $note = $array['note'];
             $indirizzo = $array['indirizzo'];
+            $telefono = $array['telefono'];
+            $noteCer = $array['noteCer'];
             $sel = $array['selezionato'];
             $colore = $array['colore'];
             $eliminato = $array['eliminato'];
+
+            $descrizione = makeDescriptionString($indirizzo, $telefono, $noteCer);
+
             $cont++;
             $i++;
             $j++;
@@ -216,7 +228,12 @@ if($archivio) {
                     <td align="center">&nbsp;</td>
                 </tr>
                 <tr id="datarow-<?php print $id?>" style="color:#FF0000" <?php if($eliminato) echo "class='data-row-del'"?>>
-                    <td width="180" bordercolor="999999" style="font-size:12px"><strong><a href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica?></a></strong><br><? print $indirizzo ?></br></td>
+                    <td <? echo("rowspan=".$ceramicheOccurrences[trim($ceramica)]) ?> valign="top" width="180" bordercolor="999999" style="font-size:12px">
+                        <strong>
+                            <a href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica?></a>
+                        </strong>
+                        <br><? print $descrizione ?></br>
+                    </td>
                     <td class = "colorable" width="180" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><a href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $palette ?></td>
@@ -246,7 +263,7 @@ if($archivio) {
                 @$tot=$tot+$quintali;
                 ?>
                 <tr id="datarow-<?php print $id ?>"  <?php if($eliminato) echo "class='data-row-del'"?>>
-                    <td width="180" bordercolor="999999"></td>
+<!--                    <td width="180" bordercolor="999999"></td>-->
                     <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><a href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $palette ?></td>
@@ -302,7 +319,9 @@ if($archivio) {
             <th width="150" bordercolor="999999" align="center">&nbsp;</th>
             <th width="40" align="center"></th>
         </tr>
-        <? while ($array = mysqli_fetch_array($ris2)){
+        <?
+        //        while ($array = mysqli_fetch_array($ris2)){
+        foreach ($rows2 as $array) {
             $id = $array['id'];
             $idcer = $array['idcer'];
             @$idgruppo2 = $idgruppo;
@@ -314,9 +333,13 @@ if($archivio) {
             $palette = $array['palette'];
             $note = $array['note'];
             $indirizzo = $array['indirizzo'];
+            $telefono = $array['telefono'];
+            $noteCer = $array['noteCer'];
             $sel = $array['selezionato'];
             $colore = $array['colore'];
             $eliminato = $array['eliminato'];
+
+            $descrizione = makeDescriptionString($indirizzo, $telefono, $noteCer);
             $cont++;
             $i++;
             @$tot_complessivo+=$quintali;
@@ -356,7 +379,12 @@ if($archivio) {
                         <td align="center">&nbsp;</td>
                     </tr>
                     <tr id="datarow-<?php print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="180" bordercolor="999999" style="font-size:12px "><strong><a href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br></td>
+                        <td <? if($ceramicheOccurrences2[trim($ceramica)] > 1) echo("rowspan=".$ceramicheOccurrences2[trim($ceramica)]) ?> valign="top" width="180" bordercolor="999999" style="font-size:12px ">
+                            <strong>
+                                <a href="gestioneProntoCeramica.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a>
+                            </strong>
+                            <br><? print $descrizione ?></br>
+                        </td>
                         <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><a href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                         <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $quintali ?></td>
                         <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $palette ?></td>
@@ -385,7 +413,7 @@ if($archivio) {
                     @$tot=$tot+$quintali;
                     ?>
                     <tr id="datarow-<?php print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="180" bordercolor="999999"></td>
+<!--                        <td width="180" bordercolor="999999"></td>-->
                         <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><a href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                         <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><? print $quintali ?></td>
                         <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><? print $palette ?></td>
@@ -450,7 +478,7 @@ if($archivio) {
                 @$tot=$tot+$quintali;
                 ?>
                 <tr id="datarow-<?php print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                    <td width="180" bordercolor="999999"></td>
+<!--                    <td width="180" bordercolor="999999"></td>-->
                     <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px"><a href="modificaProntoCeramiche.php?id=<? print $id ?>"><? print $cliente ?></a></td>
                     <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td class="colorable" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px" align="center"><? print $palette ?></td>

@@ -87,29 +87,29 @@ $array = mysqli_fetch_array($ris);
             <td width="32%"><div align="right" class="Stile2">
                     <div align="right">Ceramica</div>
                 </div></td>
-            <td width="68%"><input type="text" name="ceramica" value="<? print $array['Ceramica'] ?>" maxlength="45"></td>
+            <td width="68%"><input type="text" name="ceramica" value="<? print $array['Ceramica'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td width="32%"><div align="right" class="Stile2">
                     <div align="right">Materiale</div>
                 </div></td>
-            <td width="68%"><input type="text" name="materiale" value="<? print $array['materiale'] ?>" maxlength="45"></td>
+            <td width="68%"><input type="text" name="materiale" value="<? print $array['materiale'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Cliente</span></div></td>
-            <td><input type="text" name="cliente" value="<? print $array['Cliente'] ?>" maxlength="45"></td>
+            <td><input type="text" name="cliente" value="<? print $array['Cliente'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Quintali</span></div></td>
-            <td><input type="text" name="quintali" value="<? print $array['quintali'] ?>" maxlength="45"></td>
+            <td><input type="text" name="quintali" value="<? print $array['quintali'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Palette</span></div></td>
-            <td><input type="text" name="palette" value="<? print $array['palette'] ?>" maxlength="45"></td>
+            <td><input type="text" name="palette" value="<? print $array['palette'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Note</span></div></td>
-            <td><input type="text" name="note" value="<? print $array['note'] ?>" maxlength="45"></td>
+            <td><input type="text" name="note" value="<? print $array['note'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2"></span></div></td>

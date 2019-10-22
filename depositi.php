@@ -21,20 +21,22 @@ if($archivio) {
     $dateStr = date('d-m-Y', strtotime($dataArchvio));
     $query = "SELECT *
  FROM (
-	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.palette,pd.note,d.indirizzo,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
+	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.palette,pd.note,d.indirizzo, d.telefono,d.note as noteDep,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
 	FROM prontidepositi pd JOIN depositi d
 	WHERE pd.deposito=d.nome and pd.eliminato=0 and date(pd.data_aggiunta) <= '$dataArchvio'
 	UNION
-	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.palette,pd.note,d.indirizzo,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
+	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.palette,pd.note,d.indirizzo, d.telefono,d.note as noteDep,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
 	FROM prontidepositi pd JOIN depositi d
 	WHERE pd.deposito=d.nome and pd.eliminato=1 and ('$dataArchvio' between date(pd.data_aggiunta) and pd.data_eliminazione)
 ) AS T1
 ORDER by deposito,ceramica,cliente";
 } else {
-    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=0 ORDER by deposito,ceramica,cliente";
+    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo, depositi.telefono,depositi.note as noteDep,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=0 ORDER by deposito,ceramica,cliente";
 }
 
 $ris = mysqli_query($db, $query) or die(mysqli_error($db));
+$rows = mysqli_fetch_all($ris, MYSQLI_ASSOC);
+$depositiOccurrences = countSqlResultFieldOccurrence($rows, 'Deposito');
 $num = mysqli_num_rows($ris);
 $cont = 0;
 $tot = 0;
@@ -172,7 +174,9 @@ if($archivio) {
             <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
             <th width="55" align="center"></th>
         </tr>
-        <? while ($array = mysqli_fetch_array($ris)) {
+        <?
+        //        while ($array = mysqli_fetch_array($ris)) {
+        foreach ($rows as $array) {
             $id = $array['id'];
             @$ceramica2 = $ceramica;
             @$deposito2 = $deposito;
@@ -183,12 +187,15 @@ if($archivio) {
             $palette = $array['palette'];
             $note = $array['note'];
             $indirizzo = $array['indirizzo'];
+            $telefono = $array['telefono'];
+            $noteDep = $array['noteDep'];
             $sel = $array['selezionato'];
             $colore = $array['colore'];
             $eliminato = isset($array['eliminato']) ? $array['eliminato'] : false;
             $cont++;
             $i++;
 
+            $descrizione = makeDescriptionString($indirizzo, $telefono, $noteDep);
             @$tot_complessivo += $quintali;
             if (trim($deposito) != trim($deposito2)) {
                 ?>
@@ -216,8 +223,12 @@ if($archivio) {
                 @$tot = $tot + $quintali;
                 ?>
                 <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                    <td width="210" bordercolor="999999" style="font-size:12px "><strong><a
-                                    href="gestioneProntoDeposito.php?nome=<? print $deposito ?>"><? print $deposito ?></a></strong><br><? print $indirizzo ?></br>
+                    <td <? echo("rowspan=".$depositiOccurrences[trim($deposito)]) ?>
+                            valign="top" width="210" bordercolor="999999" style="font-size:12px ">
+                        <strong>
+                            <a href="gestioneProntoDeposito.php?nome=<? print $deposito ?>"><? print $deposito ?></a>
+                        </strong>
+                        <br><? print $descrizione ?></br>
                     </td>
                     <td width="180" bordercolor="999999" style="font-size:12px "><? print $ceramica ?></td>
                     <td class = "colorable"  width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -258,8 +269,7 @@ if($archivio) {
 
                     ?>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="210" bordercolor="999999">
-                        </td>
+<!--                        <td width="210" bordercolor="999999"></td>-->
                         <td width="180" bordercolor="999999" style="font-size:12px "><? print $ceramica ?></td>
                         <td class = "colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
@@ -296,7 +306,7 @@ if($archivio) {
                 } else {
                     ?>
                     <tr tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="210" bordercolor="999999"></td>
+<!--                        <td width="210" bordercolor="999999"></td>-->
                         <td width="180" bordercolor="999999"></td>
                         <td class = "colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a

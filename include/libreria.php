@@ -59,4 +59,30 @@ function printError($error, $redirectUrl = null) {
     }
 }
 
+function makeDescriptionString($indirizzo, $telefono, $note) {
+    $descrizione = $indirizzo;
+
+    if(!empty(trim($telefono))) {
+        $descrizione .= '<br>' . $telefono;
+    }
+
+    if(!empty(trim($note))) {
+        $descrizione .= '<br>' . $note;
+    }
+
+    return $descrizione;
+}
+
+function countSqlResultFieldOccurrence($rows, $field) {
+    $occurrences = array();
+    foreach ($rows as $row) {
+        $term = trim($row[$field]);
+        if (isset($occurrences[$term])) {
+            $occurrences[$term] = $occurrences[$term] + 1;
+        } else {
+            $occurrences[$term] = 1;
+        }
+    }
+    return $occurrences;
+}
 ?>

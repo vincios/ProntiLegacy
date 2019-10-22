@@ -95,29 +95,29 @@ else
             <td width="32%"><div align="right" class="Stile2">
                     <div align="right">Deposito</div>
                 </div></td>
-            <td width="68%"><input type="text" name="deposito" value="<? print $_REQUEST['deposito'] ?>" maxlength="45"></td>
+            <td width="68%"><input type="text" name="deposito" value="<? print $_REQUEST['deposito'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td width="32%"><div align="right" class="Stile2">
                     <div align="right">Cliente</div>
                 </div></td>
-            <td width="68%"><input type="text" name="cliente" value="<? print $_REQUEST['cliente'] ?>" maxlength="45"></td>
+            <td width="68%"><input type="text" name="cliente" value="<? print $_REQUEST['cliente'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">D.D.S</span></div></td>
-            <td><input type="text" name="dds" value="<? print $_REQUEST['dds'] ?>" maxlength="45"></td>
+            <td><input type="text" name="dds" value="<? print $_REQUEST['dds'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Quintali</span></div></td>
-            <td><input type="text" name="quintali" value="<? print $_REQUEST['quintali'] ?>" maxlength="45"></td>
+            <td><input type="text" name="quintali" value="<? print $_REQUEST['quintali'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Palette</span></div></td>
-            <td><input type="text" name="palette" value="<? print $_REQUEST['palette'] ?>" maxlength="45"></td>
+            <td><input type="text" name="palette" value="<? print $_REQUEST['palette'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2">Note</span></div></td>
-            <td><input type="text" name="note" value="<? print $_REQUEST['note'] ?>" maxlength="45"></td>
+            <td><input type="text" name="note" value="<? print $_REQUEST['note'] ?>" maxlength="50"></td>
         </tr>
         <tr>
             <td><div align="right"><span class="Stile2"></span></div></td>

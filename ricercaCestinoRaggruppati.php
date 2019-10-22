@@ -21,7 +21,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $Al_giorno = strtok($Al, '-');
     $Al_mese = strtok('-');
     $Al_anno = substr($Al, -4);
-    $query = "SELECT * FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by idgruppo,ceramica,materiale,cliente";
+    $query = "SELECT *, prontiraggruppati.note as note, ceramica.note as noteCer FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by idgruppo,ceramica,materiale,cliente";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -37,7 +37,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         echo("La data deve essere specificata nel formato gg-mm-aaaa!");
         exit;
     }
-    $query = "SELECT * FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by idgruppo,ceramica,materiale,cliente";
+    $query = "SELECT *, prontiraggruppati.note as note,ceramica.note as noteCer FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by idgruppo,ceramica,materiale,cliente";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -141,8 +141,12 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $note = $array['note'];
         $idgruppo = $array['idgruppo'];
         $indirizzo = $array['indirizzo'];
+        $telefono = $array['telefono'];
+        $noteCer = $array['noteCer'];
         $sel = $array['selezionato'];
         $colore = $array['colore'];
+        $descrizione = makeDescriptionString($indirizzo, $telefono, $noteCer);
+
         $cont++;
         $i++;
         if ($idgruppo != $idgruppo2) {
@@ -191,7 +195,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 </tr>
                 <tr>
                     <td width="180" bordercolor="999999" style="font-size:12px "><strong><a
-                                    href="gestioneProntoRaggruppati.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br>
+                                    href="gestioneProntoRaggruppati.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $descrizione ?></br>
                     </td>
                     <td width="180" bordercolor="999999" style="font-size:12px "><? print $materiale ?></td>
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -252,7 +256,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 </tr>
                 <tr>
                     <td width="180" bordercolor="999999" style="font-size:12px "><strong><a
-                                    href="gestioneProntoRaggruppati.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br>
+                                    href="gestioneProntoRaggruppati.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $descrizione ?></br>
                     </td>
                     <td width="180" bordercolor="999999" style="font-size:12px "><? print $materiale ?></td>
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"

@@ -31,7 +31,8 @@
 		$ok = 0;		
 		$_REQUEST['nome'] = "";
 		$_REQUEST['indirizzo'] = "";
-		$_REQUEST['telefono'] = "";
+        $_REQUEST['telefono'] = "";
+        $_REQUEST['note'] = "";
 		$_REQUEST['colore'] = "FFFFFF";
 	}
 ?>
@@ -93,7 +94,7 @@ a:active {
     <td width="32%"><div align="right" class="Stile2">
       <div align="right">Nome</div>
     </div></td>
-    <td width="68%"><input type="text" name="nome" value="<? print $_REQUEST['nome'] ?>" maxlength="25"></td>
+    <td width="68%"><input type="text" name="nome" value="<? print $_REQUEST['nome'] ?>" maxlength="50"></td>
   </tr>
   <tr>
     <td><div align="right"><span class="Stile2">Indirizzo</span></div></td>
@@ -101,8 +102,12 @@ a:active {
   </tr>
   <tr>
     <td><div align="right"><span class="Stile2">Telefono</span></div></td>
-    <td><input type="text" name="telefono" value="<? print $_REQUEST['telefono'] ?>" maxlength="20"></td>
+    <td><input type="text" name="telefono" value="<? print $_REQUEST['telefono'] ?>" maxlength="50"></td>
   </tr>
+    <tr>
+        <td><div align="right"><span class="Stile2">Note</span></div></td>
+        <td><textarea name="note" rows="4" cols="25" maxlength="2000"><? print $_REQUEST['note'] ?></textarea></td>
+    </tr>
   <tr>
     <td><div align="right"><span class="Stile2">Colore</span></div></td>
     <td><select name="colore">
@@ -135,8 +140,12 @@ a:active {
 
 <?
 	if ($ok == 1){
-		$_REQUEST['nome']=strtoupper($_REQUEST['nome']);
-		$query="insert into depositi (nome,indirizzo,telefono,colore) values(\"" . mysqli_escape_string($db, $_REQUEST['nome']) . "\",'". mysqli_escape_string($db, $_REQUEST['indirizzo']) ."','". mysqli_escape_string($db, $_REQUEST['telefono']) ."', \"". mysqli_escape_string($db, $_REQUEST["colore"]) ."\")";
+		$nome = mysqli_escape_string($db, strtoupper($_REQUEST['nome']));
+        $indirizzo = mysqli_escape_string($db, $_REQUEST['indirizzo']);
+        $telefono = mysqli_escape_string($db, $_REQUEST['telefono']);
+        $note = mysqli_escape_string($db, $_REQUEST['note']);
+        $colore = mysqli_escape_string($db, $_REQUEST["colore"]);
+		$query="insert into depositi (nome,indirizzo,telefono,note,colore) values('$nome', '$indirizzo', '$telefono', '$note', '$colore')";
 		mysqli_query($db, $query) or die( mysqli_error($db) );
 		
 		print '	<script language="javascript">	

@@ -21,19 +21,21 @@ if($archivio) {
     $dateStr = date('d-m-Y', strtotime($dataArchvio));
 
     $query = "SELECT * FROM (
-                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
+                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,m.telefono,m.note as noteMar,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
                                 FROM prontimarazzi pm JOIN marazzi m
                                 WHERE pm.deposito=m.nome and pm.eliminato=0 and date(pm.data_aggiunta) <= '$dataArchvio'
                                 UNION
-                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
+                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,m.telefono,m.note as noteMar,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
                                 FROM prontimarazzi pm JOIN marazzi m
                                 WHERE pm.deposito=m.nome and pm.eliminato=1 and ('$dataArchvio' between date(pm.data_aggiunta) and pm.data_eliminazione)
                             ) AS T1
               ORDER by deposito,cliente,dds";
 } else {
-    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=0 ORDER by deposito,cliente,dds";
+    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,marazzi.telefono,marazzi.note as noteMar,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=0 ORDER by deposito,cliente,dds";
 }
 $ris = mysqli_query($db, $query) or die(mysqli_error($db));
+$rows = mysqli_fetch_all($ris, MYSQLI_ASSOC);
+$marazziOccurrences = countSqlResultFieldOccurrence($rows, 'Deposito');
 $num = mysqli_num_rows($ris);
 $cont = 0;
 $tot = 0;
@@ -167,7 +169,8 @@ if($archivio) {
             <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
             <th width="45" align="center"></th>
         </tr>
-        <? while ($array = mysqli_fetch_array($ris)) {
+        <? //while ($array = mysqli_fetch_array($ris)) {
+        foreach ($rows as $array) {
             $id = $array['id'];
             @$cliente2 = $cliente;
             @$deposito2 = $deposito;
@@ -178,12 +181,14 @@ if($archivio) {
             $palette = $array['palette'];
             $note = $array['note'];
             $indirizzo = $array['indirizzo'];
+            $telefono = $array['telefono'];
+            $noteMar = $array['noteMar'];
             $sel = $array['selezionato'];
             $colore = $array['colore'];
             $eliminato = isset($array['eliminato']) ? $array['eliminato'] : false;
             $cont++;
             $i++;
-
+            $descrizione = makeDescriptionString($indirizzo, $telefono, $noteMar);
             @$tot_complessivo += $quintali;
             if (trim($deposito) != trim($deposito2)) {
 //                $cliente2 = null;
@@ -212,49 +217,50 @@ if($archivio) {
                 </tr>
                 <?
                 @$tot = $tot + $quintali;
-                    ?>
-                    <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="210" bordercolor="999999" style="font-size:12px">
-                            <a href="gestioneProntoMarazzi.php?nome=<? print $deposito ?>">
-                                <strong><? print $deposito ?></strong>
-                            </a>
-                            <br><? print $indirizzo ?></br>
-                        </td>
-                        <td class = "colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px"><a
-                                    href="modificaProntoMarazzi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
-                        <td class = "colorable" width="160" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px"><? print $dds ?></td>
-                        <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px" align="center"><? print $quintali ?></td>
-                        <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px" align="center"><? print $palette ?></td>
-                        <td class = "colorable" width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
-                            style="font-size:12px"
-                            align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class = "row-actions" width="45" align="center" bordercolor="999999">
-                            <a href="cancellaProntoMarazzi.php?id=<? print $id ?>">
-                                <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0"></a>
+                ?>
+                <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
+                    <td <? echo("rowspan=".$marazziOccurrences[trim($deposito)])?>
+                            valign="top" width="210" bordercolor="999999" style="font-size:12px">
+                        <a href="gestioneProntoMarazzi.php?nome=<? print $deposito ?>">
+                            <strong><? print $deposito ?></strong>
+                        </a>
+                        <br><? print $descrizione ?></br>
+                    </td>
+                    <td class = "colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px"><a
+                                href="modificaProntoMarazzi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="160" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px"><? print $dds ?></td>
+                    <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $quintali ?></td>
+                    <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px" align="center"><? print $palette ?></td>
+                    <td class = "colorable" width="120" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
+                        style="font-size:12px"
+                        align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
+                    <td class = "row-actions" width="45" align="center" bordercolor="999999">
+                        <a href="cancellaProntoMarazzi.php?id=<? print $id ?>">
+                            <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0"></a>
 
-                            <!--SPOSTA CERAMICA TO DEPOSITO-->
-                            <a href="functionMoveProntoToDeposito.php?id=<? print $id ?>&from=<?php echo $fileName ?>&to=AA%20DEP.MOLISE&redirectUrl=<?print $_SERVER['PHP_SELF']?>">
-                                <img class="" src="img/next.png" width="16" height="16" border="0">
-                            </a>
+                        <!--SPOSTA CERAMICA TO DEPOSITO-->
+                        <a href="functionMoveProntoToDeposito.php?id=<? print $id ?>&from=<?php echo $fileName ?>&to=AA%20DEP.MOLISE&redirectUrl=<?print $_SERVER['PHP_SELF']?>">
+                            <img class="" src="img/next.png" width="16" height="16" border="0">
+                        </a>
 
-                            <div class="evidenzia">
-                                <img src="img/seleziona.jpg" width="16" height="16" border="0">
-                                <? print getColorPicker($fileName, $id); ?>
-                            </div>
-                        </td>
-                        <td <?php if ($colore != "") echo("bgcolor=\"$colore\" ") ?> width="3"></td>
-                    </tr>
-                    <?
+                        <div class="evidenzia">
+                            <img src="img/seleziona.jpg" width="16" height="16" border="0">
+                            <? print getColorPicker($fileName, $id); ?>
+                        </div>
+                    </td>
+                    <td <?php if ($colore != "") echo("bgcolor=\"$colore\" ") ?> width="3"></td>
+                </tr>
+                <?
             } else {
                 @$tot = $tot + $quintali;
                 if (trim($cliente) != trim($cliente2)) {
                     ?>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="210" bordercolor="999999"></td>
+<!--                        <td width="210" bordercolor="999999"></td>-->
                         <td class="colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
                                     href="modificaProntoMarazzi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
@@ -288,7 +294,7 @@ if($archivio) {
                 } else {
                     ?>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="210" bordercolor="999999"></td>
+<!--                        <td width="210" bordercolor="999999"></td>-->
                         <td class="colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
                                     href="modificaProntoMarazzi.php?id=<? print $id ?>"><? print $cliente ?></a></td>

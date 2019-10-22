@@ -22,7 +22,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $Al_mese = strtok('-');
     $Al_anno = substr($Al, -4);
 
-    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by deposito,cliente,dds";
+    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,marazzi.telefono,marazzi.note as noteMar,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by deposito,cliente,dds";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -38,7 +38,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         echo("La data deve essere specificata nel formato gg-mm-aaaa!");
         exit;
     }
-    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by deposito,cliente,dds";
+    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,marazzi.telefono,marazzi.note as noteMar,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by deposito,cliente,dds";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -144,8 +144,12 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $palette = $array['palette'];
         $note = $array['note'];
         $indirizzo = $array['indirizzo'];
+        $telefono = $array['telefono'];
+        $noteMar = $array['noteMar'];
         $sel = $array['selezionato'];
         $colore = $array['colore'];
+        $descrizione = makeDescriptionString($indirizzo, $telefono, $noteMar);
+
         $cont++;
         $i++;
         if ($deposito != $deposito2) {
@@ -179,7 +183,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <tr>
                     <td width="210" bordercolor="999999" style="font-size:12px"><a
                                 href="gestioneProntoMarazzi.php?nome=<? print $deposito ?>"><strong><? print $deposito ?>
-                        </a></strong><br><? print $indirizzo ?></br></td>
+                        </a></strong><br><? print $descrizione ?></br></td>
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoMarazzi.php?id=<? print $id ?>"><? print $cliente ?></a></td>

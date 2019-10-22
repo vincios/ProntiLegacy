@@ -87,7 +87,7 @@ a:active {
     <td width="32%"><div align="right" class="Stile2">
       <div align="right">Nome</div>
     </div></td>
-    <td width="68%"><input type="text" name="nome" value="<? print $array['nome'] ?>" maxlength="25"></td>
+    <td width="68%"><input type="text" name="nome" value="<? print $array['nome'] ?>" maxlength="50"></td>
   </tr>
   <tr>
     <td><div align="right"><span class="Stile2">Indirizzo</span></div></td>
@@ -95,8 +95,12 @@ a:active {
   </tr>
   <tr>
     <td><div align="right"><span class="Stile2">Telefono</span></div></td>
-    <td><input type="text" name="telefono" value="<? print $array['telefono'] ?>" maxlength="20"></td>
+    <td><input type="text" name="telefono" value="<? print $array['telefono'] ?>" maxlength="50"></td>
   </tr>
+    <tr>
+        <td><div align="right"><span class="Stile2">Note</span></div></td>
+        <td><textarea rows="4" cols="20" name="note" maxlength="2000"><? print $array['note'] ?></textarea></td>
+    </tr>
   <tr>
     <td><div align="right"><span class="Stile2">Colore</span></div></td>
     <td><select name="colore">

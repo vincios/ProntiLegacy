@@ -19,7 +19,7 @@
     background-color: antiquewhite;
     z-index: 1;
     bottom: 130%;
-    margin-left: -80px;
+    margin-left: -120px;
     margin-right: 50px;
     box-shadow: -2px -2px 5px lightgray;
 }
@@ -38,7 +38,7 @@
     .evidenzia .colorPopup{
         width: 160px;
         bottom: 130%;
-        margin-left: -90px;
+        margin-left: -120px;
         margin-right: 50px;
         box-shadow: -2px -2px 5px lightgray;
     }

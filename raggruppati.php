@@ -21,7 +21,8 @@ if($archivio) {
     $dateStr = date('d-m-Y', strtotime($dataArchvio));
 
     $query = "SELECT * FROM (
-                SELECT * FROM prontiraggruppati pr JOIN ceramica c
+                SELECT id, Ceramica, materiale, Cliente, quintali, palette, pr.note, selezionato, data_aggiunta, eliminato, data_eliminazione, idcer, nome, indirizzo, telefono, c.note as noteCer, idgruppo, colore 
+                FROM prontiraggruppati pr JOIN ceramica c
                 WHERE c.idgruppo!=0 and c.nome=pr.ceramica and eliminato=0 and date(pr.data_aggiunta) <= '$dataArchvio'
                 UNION 
                 SELECT * FROM prontiraggruppati pr JOIN ceramica c
@@ -29,10 +30,12 @@ if($archivio) {
             ) AS T1
             ORDER by idgruppo,ceramica,materiale,cliente";
 } else {
-    $query = "SELECT * FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=0 ORDER by idgruppo,ceramica,materiale,cliente";
+    $query = "SELECT id, Ceramica, materiale, Cliente, quintali, palette, prontiraggruppati.note, selezionato, data_aggiunta, eliminato, data_eliminazione, idcer, nome, indirizzo, telefono, ceramica.note as noteCer, idgruppo, colore  FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=0 ORDER by idgruppo,ceramica,materiale,cliente";
 }
 
 $ris = mysqli_query($db, $query) or die(mysqli_error($db));
+$rows = mysqli_fetch_all($ris, MYSQLI_ASSOC);
+$ceramicheOccurrences = countSqlResultFieldOccurrence($rows, 'Ceramica');
 $num = mysqli_num_rows($ris);
 $cont = 0;
 $tot = 0;
@@ -166,9 +169,11 @@ if($archivio) {
             <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
             <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
             <th width="150" bordercolor="999999" align="center"><strong>Note</strong></th>
-            <th width="45" align="center"></th>
+            <th width="50" align="center"></th>
         </tr>
-        <? while ($array = mysqli_fetch_array($ris)) {
+        <?
+        //        while ($array = mysqli_fetch_array($ris)) {
+        foreach ($rows as $array) {
             $id = $array['id'];
             @$ceramica2 = $ceramica;
             @$idgruppo2 = $idgruppo;
@@ -180,11 +185,14 @@ if($archivio) {
             $note = $array['note'];
             $idgruppo = $array['idgruppo'];
             $indirizzo = $array['indirizzo'];
+            $telefono = $array['telefono'];
+            $noteCer = $array['noteCer'];
             $sel = $array['selezionato'];
             $colore = $array['colore'];
             $eliminato = isset($array['eliminato']) ? $array['eliminato'] : false;
             $cont++;
             $i++;
+            $descrizione = makeDescriptionString($indirizzo, $telefono, $noteCer);
 
             @$tot_complessivo += $quintali;
             if ($idgruppo != $idgruppo2) {
@@ -231,8 +239,12 @@ if($archivio) {
                         <td align="center">&nbsp;</td>
                     </tr>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="180" bordercolor="999999" style="font-size:12px "><strong><a
-                                        href="gestioneProntoRaggruppati.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br>
+                        <td <? echo("rowspan=".$ceramicheOccurrences[trim($ceramica)])?>
+                                valign="top" width="180" bordercolor="999999" style="font-size:12px ">
+                            <strong>
+                                <a href="gestioneProntoRaggruppati.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a>
+                            </strong>
+                            <br><? print $descrizione ?></br>
                         </td>
                         <td width="180" bordercolor="999999" style="font-size:12px "><? print $materiale ?></td>
                         <td class="colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -245,7 +257,7 @@ if($archivio) {
                         <td class = "colorable" width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class="row-actions" width="45" align="center" bordercolor="999999">
+                        <td class="row-actions" width="50" align="center" bordercolor="999999">
                             <a href="cancellaProntoRaggruppati.php?id=<? print $id ?>">
                                 <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
                             </a>
@@ -266,7 +278,7 @@ if($archivio) {
                 } else {
                     ?>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="180" bordercolor="999999"></td>
+<!--                        <td width="180" bordercolor="999999"></td>-->
                         <td width="180" bordercolor="999999" style="font-size:12px "><? print $materiale ?></td>
                         <td class="colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
@@ -278,7 +290,7 @@ if($archivio) {
                         <td class="colorable" width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class="row-actions" width="45" align="center" bordercolor="999999">
+                        <td class="row-actions" width="50" align="center" bordercolor="999999">
                             <a href="cancellaProntoRaggruppati.php?id=<? print $id ?>">
                                 <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
                             </a>
@@ -310,8 +322,12 @@ if($archivio) {
                         <td align="center">&nbsp;</td>
                     </tr>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="180" bordercolor="999999" style="font-size:12px "><strong><a
-                                        href="gestioneProntoRaggruppati.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a></strong><br><? print $indirizzo ?></br>
+                        <td <? echo("rowspan=".$ceramicheOccurrences[trim($ceramica)])?>
+                                valign="top" width="180" bordercolor="999999" style="font-size:12px ">
+                            <strong>
+                                <a href="gestioneProntoRaggruppati.php?nome=<? print $ceramica ?>"><? print $ceramica ?></a>
+                            </strong>
+                            <br><? print $descrizione ?></br>
                         </td>
                         <td width="180" bordercolor="999999" style="font-size:12px "><? print $materiale ?></td>
                         <td class="colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -324,7 +340,7 @@ if($archivio) {
                         <td class="colorable" width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class="row-actions" width="45" align="center" bordercolor="999999">
+                        <td class="row-actions" width="50" align="center" bordercolor="999999">
                             <a href="cancellaProntoRaggruppati.php?id=<? print $id ?>">
                                 <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
                             </a>
@@ -345,7 +361,7 @@ if($archivio) {
                 } else {
                     ?>
                     <tr id="datarow-<? print $id ?>" <?php if($eliminato) echo "class='data-row-del'"?>>
-                        <td width="180" bordercolor="999999"></td>
+<!--                        <td width="180" bordercolor="999999"></td>-->
                         <td width="180" bordercolor="999999" style="font-size:12px "><? print $materiale ?></td>
                         <td class="colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
@@ -357,7 +373,7 @@ if($archivio) {
                         <td class="colorable" width="150" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px"
                             align="center" <? if (($note == "URGENTE") || ($note == "TASSATIVO")) { ?> style="color:#FF0000 " <? } ?>><? print $note ?></td>
-                        <td class="row-actions" width="45" align="center" bordercolor="999999">
+                        <td class="row-actions" width="50" align="center" bordercolor="999999">
                             <a href="cancellaProntoRaggruppati.php?id=<? print $id ?>">
                                 <img src="img/cancellaAdminPiccolo.gif" width="16" height="16" border="0">
                             </a>
