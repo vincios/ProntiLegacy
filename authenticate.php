@@ -54,10 +54,11 @@
 
 	if ($detail==0)
 	{
+	    echo $detail;
 	?><HEAD>
 		<SCRIPT language="JavaScript1.1">
 		<!--
-			location.replace("<? echo "index.php" ?>");
+<!--			location.replace("--><?// echo "index.php" ?><!--");-->
 		//-->
 		</SCRIPT>
 	  </HEAD>

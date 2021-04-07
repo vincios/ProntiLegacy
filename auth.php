@@ -68,10 +68,12 @@ class auth{
 
 		$SelectedDB = mysqli_select_db($connection, $this->DBNAME);
 		$result = mysqli_query($connection, $query);
-		
+
+		echo mysqli_error($connection);
+
 		$numrows = mysqli_num_rows($result);
 		$row = mysqli_fetch_array($result);
-		
+
 		// CHECK IF THERE ARE RESULTS
 		// Logic: If the number of rows of the resulting recordset is 0, that means that no
 		// match was found. Meaning, wrong username-password combination.
