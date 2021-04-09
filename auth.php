@@ -40,7 +40,7 @@ class auth{
    // var $HOST = "192.168.1.11";	// Change this to the proper DB HOST
 	var $USERNAME = "menzione";	// Change this to the proper DB USERNAME
 	var $PASSWORD = "trasporti";	// Change this to the proper DB USER PASSWORD
-	var $DBNAME = "Sql119682_1";	// Change this to the proper DB NAME
+	var $DBNAME = "sql119682_1";	// Change this to the proper DB NAME
 
 	// getcliente
 	function getutente($username, $password, $idutente) {
