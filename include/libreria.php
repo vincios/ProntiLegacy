@@ -85,4 +85,35 @@ function countSqlResultFieldOccurrence($rows, $field) {
     }
     return $occurrences;
 }
+
+function endsWith( $haystack, $needle ) {
+    $length = strlen( $needle );
+    if( !$length ) {
+        return true;
+    }
+    return substr( $haystack, -$length ) === $needle;
+}
+
+function createSearchURL($currentURI, $searchCondition) {
+    $uriParts = explode("/", $currentURI);
+    $page = end($uriParts); // get only last part of url
+    $searchField = explode("=", $searchCondition)[0];
+
+    // check if url contains yet the search condition (written as plain string or as urlencoded string)
+    if (stripos(urldecode($currentURI), $searchField)) {
+        return $page;
+    }
+
+    // remove (eventual) trailing '?' character
+    if (endsWith($page, '?')) {
+        $page = substr($page, 0, -1);
+    }
+    
+    $pageParts = explode("?", $page);
+    // "(count($pageParts) > 1 && $pageParts[1] !== "")" check if uri contains parameters:
+    // check if there is some parameter after the (eventual) '?' character
+    $separator = (count($pageParts) > 1 && $pageParts[1] !== "") ? "&" : "?";
+
+    return $page . $separator . "search=" . urlencode($searchCondition);
+}
 ?>

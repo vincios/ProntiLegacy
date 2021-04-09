@@ -14,24 +14,33 @@ $dateStr = $today['mday'] . " " . $today['month'];
 $dateNumber = $today['year'] . "-" . $today['mon'] . "-" . $today['mday'];
 
 $archivio = isset($_REQUEST['archivio']);
+$search = isset($_REQUEST['search']);
+//$searchParameter = $_REQUEST['search']; // search parameter must be a string as "FIELD='value'"
+$searchCondition = $search ? (sprintf("and %s", $_REQUEST['search'])) : "";
 
+$readOnly = $archivio || $search;
 if($archivio) {
     $dataArchvio = $_REQUEST['archivio'];
     $dateNumber = $dataArchvio;
     $dateStr = date('d-m-Y', strtotime($dataArchvio));
 
     $query = "SELECT * FROM (
-                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,m.telefono,m.note as noteMar,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
+                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.autista,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,m.telefono,m.note as noteMar,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
                                 FROM prontimarazzi pm JOIN marazzi m
-                                WHERE pm.deposito=m.nome and pm.eliminato=0 and date(pm.data_aggiunta) <= '$dataArchvio'
+                                WHERE pm.deposito=m.nome and pm.eliminato=0 and date(pm.data_aggiunta) <= '$dataArchvio' $searchCondition
                                 UNION
-                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,m.telefono,m.note as noteMar,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
+                                SELECT pm.id,pm.Deposito,pm.Cliente,pm.autista,pm.quintali,pm.palette,pm.dds,pm.note,m.indirizzo,m.telefono,m.note as noteMar,pm.selezionato, pm.data_aggiunta, pm.eliminato, pm.data_eliminazione, m.colore 
                                 FROM prontimarazzi pm JOIN marazzi m
-                                WHERE pm.deposito=m.nome and pm.eliminato=1 and ('$dataArchvio' between date(pm.data_aggiunta) and pm.data_eliminazione)
+                                WHERE pm.deposito=m.nome and pm.eliminato=1 and ('$dataArchvio' between date(pm.data_aggiunta) and pm.data_eliminazione) $searchCondition
                             ) AS T1
               ORDER by deposito,cliente,dds";
 } else {
-    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,marazzi.telefono,marazzi.note as noteMar,prontimarazzi.selezionato,marazzi.colore FROM prontimarazzi JOIN marazzi WHERE prontimarazzi.deposito=marazzi.nome and eliminato=0 ORDER by deposito,cliente,dds";
+    $query = "SELECT prontimarazzi.id,prontimarazzi.Deposito,prontimarazzi.Cliente,prontimarazzi.autista,
+              prontimarazzi.quintali,prontimarazzi.palette,prontimarazzi.dds,prontimarazzi.note,marazzi.indirizzo,
+              marazzi.telefono,marazzi.note as noteMar,prontimarazzi.selezionato,marazzi.colore 
+              FROM prontimarazzi JOIN marazzi 
+              WHERE prontimarazzi.deposito=marazzi.nome and eliminato=0 $searchCondition
+              ORDER by deposito,cliente,dds";
 }
 $ris = mysqli_query($db, $query) or die(mysqli_error($db));
 $rows = mysqli_fetch_all($ris, MYSQLI_ASSOC);
@@ -54,6 +63,7 @@ $i = 0;
         body, td, th {
             font-family: Verdana, Arial, Helvetica, sans-serif;
             color: #000000;
+            /*border: 1px solid;*/
         }
 
         body {
@@ -86,6 +96,8 @@ $i = 0;
     </style>
     <link rel="stylesheet" type="text/css" href="css/color_popup.css">
     <link rel="stylesheet" type="text/css" href="styleCheck.css">
+    <link rel="stylesheet" type="text/css" href="css/general.css">
+    <link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
     <script type="application/javascript" src="functions.js"></script>
 </head>
 
@@ -98,17 +110,17 @@ if($archivio) {
 }
 ?>
 
-<p id="isArchivio" class="hidden"><?php echo $archivio === true ? 'true' : 'false'?></p>
+<p id="isArchivio" class="hidden"><?php echo $readOnly === true ? 'true' : 'false'?></p>
 <div class="page-content">
-    <table width="100%" height="80" border="0">
+    <table width="100%" height="80"  border="0" id="table1">
         <tr>
             <td width="40%">
                 <div align="center" class="Titolo roboto-font underlined">MARAZZI : <? print $dateStr ?></div>
             </td>
-            <td width="25%">
+            <td width="25%" class="no-print">
                 <? echo getLegend($db, $fileName, $dateNumber); ?>
             </td>
-            <td width="15%" class="archivio-hidden">
+            <td width="15%" class="archivio-hidden no-print">
                 <form id="frmEliminaEvidenziati" name="frmEliminaEvidenziati" method="post" action="functionEliminaProntiMarazziEvidenziati.php">
                     <table>
                         <tr>
@@ -147,12 +159,12 @@ if($archivio) {
                     </table>
                 </form>
             </td>
-            <td width="10%" class="archivio-hidden">
+            <td width="10%" class="archivio-hidden no-print">
                 <form name="form1" method="post" action="ricercamarazzi.php">
                     <input type="submit" name="Submit" value="Ricerca">
                 </form>
             </td>
-            <td width="10%" class="archivio-hidden">
+            <td width="10%" class="archivio-hidden no-print">
                 <form name="form1" method="post" action="inserisciProntoMarazzi.php">
                     <input type="submit" name="Submit" value="Inserisci Pronto">
                 </form>
@@ -161,13 +173,14 @@ if($archivio) {
     </table>
     <table width="100%" border="0" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
         <tr>
-            <th width="200" bordercolor="999999" align="center"><strong>Deposito</strong></th>
-            <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
-            <th width="165" bordercolor="999999" align="center"><strong>D.D.S</strong></th>
-            <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
-            <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
-            <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
-            <th width="45" align="center"></th>
+            <th width="20%" bordercolor="999999" align="center"><strong>Deposito</strong></th>
+            <th width="18%" bordercolor="999999" align="center"><strong>Cliente</strong></th>
+            <th width="12%" bordercolor="999999" align="center"><strong>Autista</strong></th>
+            <th width="16%" bordercolor="999999" align="center"><strong>D.D.S</strong></th>
+            <th width="6%" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+            <th width="6%" bordercolor="999999" align="center"><strong>Palette</strong></th>
+            <th width="15%" bordercolor="999999" align="center"><strong>Note</strong></th>
+            <th width="7%" align="center"></th>
         </tr>
         <? //while ($array = mysqli_fetch_array($ris)) {
         foreach ($rows as $array) {
@@ -176,6 +189,7 @@ if($archivio) {
             @$deposito2 = $deposito;
             $deposito = $array['Deposito'];
             $cliente = $array['Cliente'];
+            $autista = $array['autista'];
             $dds = $array['dds'];
             $quintali = $array['quintali'];
             $palette = $array['palette'];
@@ -200,6 +214,7 @@ if($archivio) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                         <strong><? print "TOT : " . $tot ?></strong></td>
                     </tr><?
@@ -208,6 +223,7 @@ if($archivio) {
                 $tot = 0;
                 ?>
                 <tr bordercolor="FFFFFF">
+                    <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -229,6 +245,11 @@ if($archivio) {
                     <td class = "colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"><a
                                 href="modificaProntoMarazzi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td class = "colorable" width="160" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px"><? print $dds ?></td>
                     <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -264,6 +285,11 @@ if($archivio) {
                         <td class="colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
                                     href="modificaProntoMarazzi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                        <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                            <?
+                            print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                            ?>
+                        </td>
                         <td class="colorable" width="160" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><? print $dds ?></td>
                         <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -298,6 +324,11 @@ if($archivio) {
                         <td class="colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
                                     href="modificaProntoMarazzi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                        <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                            <?
+                            print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                            ?>
+                        </td>
                         <td class="colorable" width="160" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><? print $dds ?></td>
                         <td class="colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"

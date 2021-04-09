@@ -13,25 +13,36 @@ $today = getdate();
 $dateStr = $today['mday'] . " " . $today['month'];
 $dateNumber = $today['year'] . "-" . $today['mon'] . "-" . $today['mday'];
 $archivio = isset($_REQUEST['archivio']);
+$search = isset($_REQUEST['search']);
+//$searchParameter = $_REQUEST['search']; // search parameter must be a string as "FIELD='value'"
+$searchCondition = $search ? (sprintf("and %s", $_REQUEST['search'])) : "";
 
+$readOnly = $archivio || $search;
 if($archivio) {
     $dataArchvio = $_REQUEST['archivio'];
     $dateNumber = $dataArchvio;
 
     $dateStr = date('d-m-Y', strtotime($dataArchvio));
     $query = "SELECT *
- FROM (
-	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.palette,pd.note,d.indirizzo, d.telefono,d.note as noteDep,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
-	FROM prontidepositi pd JOIN depositi d
-	WHERE pd.deposito=d.nome and pd.eliminato=0 and date(pd.data_aggiunta) <= '$dataArchvio'
-	UNION
-	SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.quintali,pd.palette,pd.note,d.indirizzo, d.telefono,d.note as noteDep,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
-	FROM prontidepositi pd JOIN depositi d
-	WHERE pd.deposito=d.nome and pd.eliminato=1 and ('$dataArchvio' between date(pd.data_aggiunta) and pd.data_eliminazione)
-) AS T1
-ORDER by deposito,ceramica,cliente";
+              FROM (
+                 SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.autista,pd.quintali,pd.palette,pd.note,d.indirizzo, d.telefono,
+                        d.note as noteDep,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
+                 FROM prontidepositi pd JOIN depositi d
+                 WHERE pd.deposito=d.nome and pd.eliminato=0 and date(pd.data_aggiunta) <= '$dataArchvio' $searchCondition
+                 UNION
+                 SELECT pd.id,pd.Deposito,pd.Ceramica,pd.Cliente,pd.autista,pd.quintali,pd.palette,pd.note,d.indirizzo, d.telefono,
+                        d.note as noteDep,pd.selezionato, pd.data_aggiunta, pd.eliminato, pd.data_eliminazione, d.colore 
+                 FROM prontidepositi pd JOIN depositi d
+                 WHERE pd.deposito=d.nome and pd.eliminato=1 and ('$dataArchvio' between date(pd.data_aggiunta) and pd.data_eliminazione) $searchCondition
+             ) AS T1
+             ORDER by deposito,ceramica,cliente";
 } else {
-    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo, depositi.telefono,depositi.note as noteDep,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=0 ORDER by deposito,ceramica,cliente";
+    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,
+              prontidepositi.autista,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo, 
+              depositi.telefono,depositi.note as noteDep,prontidepositi.selezionato,depositi.colore 
+              FROM prontidepositi JOIN depositi 
+              WHERE prontidepositi.deposito=depositi.nome and eliminato=0 $searchCondition
+              ORDER by deposito,ceramica,cliente";
 }
 
 $ris = mysqli_query($db, $query) or die(mysqli_error($db));
@@ -56,6 +67,7 @@ $i = 0;
         body, td, th {
             font-family: Verdana, Arial, Helvetica, sans-serif;
             color: #000000;
+            /*border: 1px solid;*/
         }
 
         body {
@@ -88,6 +100,8 @@ $i = 0;
     </style>
     <link rel="stylesheet" type="text/css" href="css/color_popup.css">
     <link rel="stylesheet" type="text/css" href="styleCheck.css">
+    <link rel="stylesheet" type="text/css" href="css/general.css">
+    <link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
     <script type="application/javascript" src="functions.js"></script>
 </head>
 
@@ -100,17 +114,17 @@ if($archivio) {
 }
 ?>
 
-<p id="isArchivio" class="hidden"><?php echo $archivio === true ? 'true' : 'false'?></p>
+<p id="isArchivio" class="hidden"><?php echo $readOnly === true ? 'true' : 'false'?></p>
 <div class="page-content">
-    <table width="100%" height="80" border="0">
+    <table width="100%" height="80"  border="0" id="table1">
         <tr>
             <td width="40%">
                 <div align="center" class="Titolo roboto-font underlined">DEPOSITI : <? print $dateStr ?></div>
             </td>
-            <td width="25%">
+            <td width="25%" class="no-print">
                 <? echo getLegend($db, $fileName, $dateNumber); ?>
             </td>
-            <td width="15%" class="archivio-hidden">
+            <td width="15%" class="archivio-hidden no-print">
                 <form id="frmEliminaEvidenziati" name="frmEliminaEvidenziati" method="post" action="functionEliminaProntiDepositiEvidenziati.php">
                     <table>
                         <tr>
@@ -149,12 +163,12 @@ if($archivio) {
                     </table>
                 </form>
             </td>
-            <td width="10%" class="archivio-hidden">
+            <td width="10%" class="archivio-hidden no-print">
                 <form name="form1" method="post" action="ricercadepositi.php">
                     <input type="submit" name="Submit" value="Ricerca">
                 </form>
             </td>
-            <td width="10%" class="archivio-hidden">
+            <td width="10%" class="archivio-hidden no-print">
                 <form name="form1" method="post" action="inserisciProntoDepositi.php">
                     <input type="submit" name="Submit" value="Inserisci Pronto">
                 </form>
@@ -166,13 +180,14 @@ if($archivio) {
     </table>
     <table id="datarow-table" width="100%" border="0" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
         <tr>
-            <th width="210" bordercolor="999999" align="center"><strong>Deposito</strong></th>
-            <th width="180" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
-            <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
-            <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
-            <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
-            <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
-            <th width="55" align="center"></th>
+            <th width="20%" bordercolor="999999" align="center"><strong>Deposito</strong></th>
+            <th width="18%" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
+            <th width="18%" bordercolor="999999" align="center"><strong>Cliente</strong></th>
+            <th width="12%" bordercolor="999999" align="center"><strong>Autista</strong></th>
+            <th width="7%" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+            <th width="7%" bordercolor="999999" align="center"><strong>Palette</strong></th>
+            <th width="12%" bordercolor="999999" align="center"><strong>Note</strong></th>
+            <th width="6%" align="center"></th>
         </tr>
         <?
         //        while ($array = mysqli_fetch_array($ris)) {
@@ -183,6 +198,7 @@ if($archivio) {
             $deposito = $array['Deposito'];
             $ceramica = $array['Ceramica'];
             $cliente = $array['Cliente'];
+            $autista = $array['autista'];
             $quintali = $array['quintali'];
             $palette = $array['palette'];
             $note = $array['note'];
@@ -205,6 +221,7 @@ if($archivio) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td></td>
                     <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                         <strong><? print "TOT : " . $tot ?></strong></td>
@@ -212,6 +229,7 @@ if($archivio) {
                 $cont = 0;
                 $tot = 0; ?>
                 <tr bordercolor="FFFFFF">
+                    <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -234,6 +252,11 @@ if($archivio) {
                     <td class = "colorable"  width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -274,6 +297,11 @@ if($archivio) {
                         <td class = "colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
                                     href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                        <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                            <?
+                            print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                            ?>
+                        </td>
                         <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
                         <td class = "colorable"  width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -311,6 +339,11 @@ if($archivio) {
                         <td class = "colorable" width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px "><a
                                     href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                        <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                            <?
+                            print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                            ?>
+                        </td>
                         <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                             style="font-size:12px" align="center"><? print $quintali ?></td>
                         <td class = "colorable" width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"

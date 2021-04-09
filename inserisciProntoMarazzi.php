@@ -31,6 +31,7 @@ else
     $ok = 0;
     $_REQUEST['deposito'] = "";
     $_REQUEST['cliente'] = "";
+    $_REQUEST['autista'] = "";
     $_REQUEST['dds'] = "";
     $_REQUEST['quintali'] = "";
     $_REQUEST['palette'] = "";
@@ -104,6 +105,12 @@ else
             <td width="68%"><input type="text" name="cliente" value="<? print $_REQUEST['cliente'] ?>" maxlength="50"></td>
         </tr>
         <tr>
+            <td width="32%"><div align="right" class="Stile2">
+                    <div align="right">Autista</div>
+                </div></td>
+            <td width="68%"><input type="text" name="autista" value="<? print $_REQUEST['autista'] ?>" maxlength="200"></td>
+        </tr>
+        <tr>
             <td><div align="right"><span class="Stile2">D.D.S</span></div></td>
             <td><input type="text" name="dds" value="<? print $_REQUEST['dds'] ?>" maxlength="50"></td>
         </tr>
@@ -142,13 +149,14 @@ if ($ok == 1){
     if ($n>0){
         $deposito = mysqli_escape_string($db, strtoupper($_REQUEST['deposito']));
         $cliente = mysqli_escape_string($db, strtoupper($_REQUEST['cliente']));
+        $autista = mysqli_escape_string($db, strtoupper($_REQUEST['autista']));
         $dds = mysqli_escape_string($db, $_REQUEST['dds']);
         $quintali = mysqli_escape_string($db, $_REQUEST['quintali']);
         $palette = mysqli_escape_string($db, $_REQUEST['palette']);
         $note = mysqli_escape_string($db, $_REQUEST['note']);
 
 //        $query="insert into prontimarazzi (Deposito,cliente,dds,quintali,note) values(\"" . mysqli_escape_string($db, $_REQUEST['deposito']) . "\",'". mysqli_escape_string($db, $_REQUEST['cliente']) ."','". mysqli_escape_string($db, $_REQUEST['dds']) ."','". mysqli_escape_string($db, $_REQUEST['quintali']) ."','". mysqli_escape_string($db, $_REQUEST['note']) ."')";
-        $query="INSERT INTO prontimarazzi (Deposito,Cliente,dds,quintali,palette,note) VALUES('$deposito','$cliente','$dds','$quintali','$palette', '$note')";
+        $query="INSERT INTO prontimarazzi (Deposito,Cliente,autista,dds,quintali,palette,note) VALUES('$deposito','$cliente','$autista','$dds','$quintali','$palette', '$note')";
         mysqli_query($db, $query) or die( mysqli_error($db) );
 
         print '	<script language="javascript">	

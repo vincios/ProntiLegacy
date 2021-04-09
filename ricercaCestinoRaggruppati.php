@@ -8,6 +8,10 @@ VerificaUtente(); //Verifico se l'utente connesso è un utente autorizzato
 $today = getdate();
 $date = $today['mday'] . " " . $today['month'];
 
+$search = isset($_REQUEST['search']);
+//$searchParameter = $_REQUEST['search']; // search parameter must be a string as "FIELD='value'"
+$searchCondition = $search ? (sprintf("and %s", $_REQUEST['search'])) : "";
+
 if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $Dal = $_GET['Dal'];
     $Al = $_GET['Al'];
@@ -21,7 +25,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $Al_giorno = strtok($Al, '-');
     $Al_mese = strtok('-');
     $Al_anno = substr($Al, -4);
-    $query = "SELECT *, prontiraggruppati.note as note, ceramica.note as noteCer FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by idgruppo,ceramica,materiale,cliente";
+    $query = "SELECT *, prontiraggruppati.note as note, ceramica.note as noteCer FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=1 and (data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno') $searchCondition ORDER by idgruppo,ceramica,materiale,cliente";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -37,7 +41,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         echo("La data deve essere specificata nel formato gg-mm-aaaa!");
         exit;
     }
-    $query = "SELECT *, prontiraggruppati.note as note,ceramica.note as noteCer FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by idgruppo,ceramica,materiale,cliente";
+    $query = "SELECT *, prontiraggruppati.note as note,ceramica.note as noteCer FROM prontiraggruppati JOIN ceramica WHERE ceramica.idgruppo!=0 and ceramica.nome=prontiraggruppati.ceramica and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' $searchCondition ORDER by idgruppo,ceramica,materiale,cliente";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -121,13 +125,14 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
     <tr>
-        <th  width="170" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
-        <th  width="180" bordercolor="999999" align="center"><strong>Materiale</strong></th>
-        <th  width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
-        <th  width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
-        <th  width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
-        <th  width="150" bordercolor="999999" align="center"><strong>Note</strong></th>
-        <th  width="25" align="center"></th>
+        <th  width="17%" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
+        <th  width="18%" bordercolor="999999" align="center"><strong>Materiale</strong></th>
+        <th  width="18%" bordercolor="999999" align="center"><strong>Cliente</strong></th>
+        <th  width="13%" bordercolor="999999" align="center"><strong>Autista</strong></th>
+        <th  width="6%" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+        <th  width="6%" bordercolor="999999" align="center"><strong>Palette</strong></th>
+        <th  width="15%" bordercolor="999999" align="center"><strong>Note</strong></th>
+        <th  width="7%" align="center"></th>
     </tr>
     <? while ($array = mysqli_fetch_array($ris)) {
         $id = $array['id'];
@@ -136,6 +141,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $materiale = $array['materiale'];
         $ceramica = $array['Ceramica'];
         $cliente = $array['Cliente'];
+        $autista = $array['autista'];
         $quintali = $array['quintali'];
         $palette = $array['palette'];
         $note = $array['note'];
@@ -158,21 +164,23 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                     <strong><? print "TOT : " . $tot ?></strong></td>
                 </tr><? }
             @$tot_complessivo += $tot;
             $cont = 0;
             $tot = 0; ?>
-            <tr bordercolor="#000000">
-                <td>______________</td>
-                <td>______________</td>
-                <td>______________</td>
-                <td>_____</td>
-                <td>_____</td>
-                <td>__________</td>
+            <tr bordercolor="#000000" class="row-separator">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr bordercolor="FFFFFF">
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -191,6 +199,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td align="center">&nbsp;</td>
                 </tr>
                 <tr>
@@ -201,6 +210,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -225,6 +239,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -252,6 +271,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     <td align="center">&nbsp;</td>
                 </tr>
                 <tr>
@@ -262,6 +282,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -286,6 +311,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoRaggruppati.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"

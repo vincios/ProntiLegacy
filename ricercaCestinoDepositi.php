@@ -8,6 +8,10 @@ VerificaUtente(); //Verifico se l'utente connesso è un utente autorizzato
 $today = getdate();
 $date = $today['mday'] . " " . $today['month'];
 
+$search = isset($_REQUEST['search']);
+//$searchParameter = $_REQUEST['search']; // search parameter must be a string as "FIELD='value'"
+$searchCondition = $search ? (sprintf("and %s", $_REQUEST['search'])) : "";
+
 if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $Dal = $_GET['Dal'];
     $Al = $_GET['Al'];
@@ -22,7 +26,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
     $Al_mese = strtok('-');
     $Al_anno = substr($Al, -4);
 
-    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo,depositi.telefono,depositi.note as noteDep,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=1 and data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno' ORDER by deposito,ceramica,cliente";
+    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.autista,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo,depositi.telefono,depositi.note as noteDep,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=1 and (data_eliminazione between '$Dal_anno-$Dal_mese-$Dal_giorno' and '$Al_anno-$Al_mese-$Al_giorno') $searchCondition ORDER by deposito,ceramica,cliente";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -39,7 +43,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         exit;
     }
 
-    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo,depositi.telefono,depositi.note as noteDep,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' ORDER by deposito,ceramica,cliente";
+    $query = "SELECT prontidepositi.id,prontidepositi.Deposito,prontidepositi.Ceramica,prontidepositi.Cliente,prontidepositi.autista,prontidepositi.quintali,prontidepositi.palette,prontidepositi.note,depositi.indirizzo,depositi.telefono,depositi.note as noteDep,prontidepositi.selezionato,depositi.colore FROM prontidepositi JOIN depositi WHERE prontidepositi.deposito=depositi.nome and eliminato=1 and data_eliminazione='$Giorno_anno-$Giorno_mese-$Giorno_giorno' $searchCondition ORDER by deposito,ceramica,cliente";
     $ris = mysqli_query($db, $query) or die(mysqli_error($db));
     $num = mysqli_num_rows($ris);
     $cont = 0;
@@ -125,13 +129,14 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
     <tr>
-        <th width="200" bordercolor="999999" align="center"><strong>Deposito</strong></th>
-        <th width="180" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
-        <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
-        <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
-        <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
-        <th width="120" bordercolor="999999" align="center"><strong>Note</strong></th>
-        <th width="25" align="center"></th>
+        <th width="20%" bordercolor="999999" align="center"><strong>Deposito</strong></th>
+        <th width="18%" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
+        <th width="18%" bordercolor="999999" align="center"><strong>Cliente</strong></th>
+        <th width="15%" bordercolor="999999" align="center"><strong>Autista</strong></th>
+        <th width="7%" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+        <th width="7%" bordercolor="999999" align="center"><strong>Palette</strong></th>
+        <th width="12%" bordercolor="999999" align="center"><strong>Note</strong></th>
+        <th width="3%" align="center"></th>
     </tr>
     <? while ($array = mysqli_fetch_array($ris)) {
         $id = $array['id'];
@@ -140,6 +145,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $deposito = $array['Deposito'];
         $ceramica = $array['Ceramica'];
         $cliente = $array['Cliente'];
+        $autista = $array['autista'];
         $quintali = $array['quintali'];
         $palette = $array['palette'];
         $note = $array['note'];
@@ -161,6 +167,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td width="120" bordercolor="999999" style="font-size:12px" align="center">
                     <strong><? print "TOT : " . $tot ?></strong></td>
                 </tr><? }
@@ -168,6 +175,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
             $cont = 0;
             $tot = 0; ?>
             <tr bordercolor="FFFFFF">
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -188,6 +196,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -215,6 +228,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -243,6 +261,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
@@ -267,6 +290,11 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
                     <td width="180" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px "><a
                                 href="modificaProntoDepositi.php?id=<? print $id ?>"><? print $cliente ?></a></td>
+                    <td class = "colorable" width="100" <?php if($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999" style="font-size:12px">
+                        <?
+                        print '<a href="' . createSearchURL($_SERVER['REQUEST_URI'], "autista='$autista'") . '">' . "$autista </a>"
+                        ?>
+                    </td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"
                         style="font-size:12px" align="center"><? print $quintali ?></td>
                     <td width="70" <?php if ($sel) echo("bgcolor=\"$COLORE_SEL[$sel]\""); ?> bordercolor="999999"

@@ -33,6 +33,7 @@ else
         $_REQUEST['deposito'] = "";
     $_REQUEST['dds'] = "";
     $_REQUEST['cliente'] = "";
+    $_REQUEST['autista'] = "";
     $_REQUEST['quintali'] = "";
     $_REQUEST['palette'] = "";
     $_REQUEST['note'] = "";
@@ -103,6 +104,10 @@ else
             <td colspan="4"><input type="text" name="cliente" value="<? print $_REQUEST['cliente'] ?>" maxlength="50"></td>
         </tr>
         <tr>
+            <td><div align="right"><span class="Stile2">Autista</span></div></td>
+            <td colspan="4"><input type="text" name="autista" value="<? print $_REQUEST['autista'] ?>" maxlength="200"></td>
+        </tr>
+        <tr>
             <td width="32%"><div align="right" class="Stile2">
                     <div align="right">D.D.S</div>
                 </div></td>
@@ -145,12 +150,13 @@ if ($ok == 1){
     if ($n > 0){
         $deposito = mysqli_escape_string($db, strtoupper($_REQUEST['deposito']));
         $cliente = mysqli_escape_string($db, strtoupper($_REQUEST['cliente']));
+        $autista = mysqli_escape_string($db, strtoupper($_REQUEST['autista']));
         $dds = mysqli_escape_string($db, $_REQUEST['dds']);
         $quintali = mysqli_escape_string($db, $_REQUEST['quintali']);
         $palette = mysqli_escape_string($db, $_REQUEST['palette']);
         $note = mysqli_escape_string($db, $_REQUEST['note']);
 //        $query="insert into prontimarazzi (Deposito,Cliente,dds,quintali,note) values(\"" . mysqli_escape_string($db, $deposito) . "\",'". mysqli_escape_string($db, $_REQUEST['cliente']) ."','" . mysqli_escape_string($db, $_REQUEST['dds']) ."','". mysqli_escape_string($db, $_REQUEST['quintali']) ."','". mysqli_escape_string($db, $_REQUEST['note']) ."')";
-        $query="INSERT INTO prontimarazzi (Deposito,Cliente,dds,quintali,palette,note) VALUES('$deposito', '$cliente', '$dds', '$quintali', '$palette', '$note')";
+        $query="INSERT INTO prontimarazzi (Deposito,Cliente,autista,dds,quintali,palette,note) VALUES('$deposito', '$cliente', '$autista', '$dds', '$quintali', '$palette', '$note')";
         mysqli_query($db, $query) or die( mysqli_error($db) );
 
         print '	<script language="javascript">	

@@ -32,6 +32,7 @@ else
     $_REQUEST['ceramica'] = "";
     $_REQUEST['materiale'] = "";
     $_REQUEST['cliente'] = "";
+    $_REQUEST['autista'] = "";
     $_REQUEST['quintali'] = "";
     $_REQUEST['palette'] = "";
     $_REQUEST['note'] = "";
@@ -108,6 +109,10 @@ else
             <td><input type="text" name="cliente" value="<? print $_REQUEST['cliente'] ?>" maxlength="50"></td>
         </tr>
         <tr>
+            <td><div align="right"><span class="Stile2">Autista</span></div></td>
+            <td><input type="text" name="autista" value="<? print $_REQUEST['autista'] ?>" maxlength="200"></td>
+        </tr>
+        <tr>
             <td><div align="right"><span class="Stile2">Quintali</span></div></td>
             <td><input type="text" name="quintali" value="<? print $_REQUEST['quintali'] ?>" maxlength="50"></td>
         </tr>
@@ -140,12 +145,13 @@ if ($ok == 1){
     if ($n>0){
         $ceramica = mysqli_escape_string($db, strtoupper($_REQUEST['ceramica']));
         $cliente = mysqli_escape_string($db, strtoupper($_REQUEST['cliente']));
+        $autista = mysqli_escape_string($db, strtoupper($_REQUEST['autista']));
         $materiale = mysqli_escape_string($db, strtoupper($_REQUEST['materiale']));
         $quintali = mysqli_escape_string($db, $_REQUEST['quintali']);
         $palette = mysqli_escape_string($db, $_REQUEST['palette']);
         $note = mysqli_escape_string($db, $_REQUEST['note']);
 //        $query="insert into prontiraggruppati (Ceramica,materiale,Cliente,quintali,note) values(\"" . mysqli_escape_string($db, $_REQUEST['ceramica']) . "\",'". mysqli_escape_string($db, $_REQUEST['materiale']) ."','". mysqli_escape_string($db, $_REQUEST['cliente']) ."','".mysqli_escape_string($db, $_REQUEST['quintali']) ."','". mysqli_escape_string($db, $_REQUEST['note']) ."')";
-        $query = "INSERT INTO prontiraggruppati (Ceramica,materiale,Cliente,quintali,palette,note) VALUES('$ceramica', '$materiale', '$cliente', '$quintali', '$palette', '$note')";
+        $query = "INSERT INTO prontiraggruppati (Ceramica,materiale,Cliente,autista,quintali,palette,note) VALUES('$ceramica', '$materiale', '$cliente', '$autista', '$quintali', '$palette', '$note')";
         mysqli_query($db, $query) or die( mysqli_error($db) );
 
         print '<script language="javascript">	

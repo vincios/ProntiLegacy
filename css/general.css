@@ -366,6 +366,11 @@ tr.data-row-del>.colorable {
     text-decoration: line-through;
 }
 
+tr.row-separator td {
+    border-bottom: 1px solid;
+    padding: 1px;
+}
+
 th {
     padding: 7px 0;
 }

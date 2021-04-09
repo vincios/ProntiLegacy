@@ -117,6 +117,7 @@ if (isset($_REQUEST['id']))
     <tr>
         <th width="180" bordercolor="999999" align="center"><strong>Ceramica</strong></th>
         <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
+        <th width="180" bordercolor="999999" align="center"><strong>Autista</strong></th>
         <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
         <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
         <th width="150" bordercolor="999999" align="center"><strong>Note</strong></th>
@@ -126,6 +127,7 @@ if (isset($_REQUEST['id']))
         $id = $array['id'];
         $ceramica = $array['Ceramica'];
         $cliente = $array['cliente'];
+        $autista = $array['autista'];
         $quintali = $array['quintali'];
         $palette = $array['palette'];
         $note = $array['note'];
@@ -133,6 +135,7 @@ if (isset($_REQUEST['id']))
         <tr>
             <td width="180" bordercolor="999999" style="font-size:12px"><strong><? print $ceramica ?></strong></td>
             <td width="180" bordercolor="999999" style="font-size:12px"><a href="modificaProntoCeramichebis.php?id=<? print $id ?>&nome=<? print $ceramica ?>"><? print $cliente ?></a></td>
+            <td width="180" bordercolor="999999" style="font-size:12px"><? print $autista ?></td>
             <td width="70" bordercolor="999999" style="font-size:12px" align="center"><? print $quintali ?></td>
             <td width="70" bordercolor="999999" style="font-size:12px" align="center"><? print $palette ?></td>
             <td width="150" bordercolor="999999" style="font-size:12px" align="center"><? print $note ?></td>

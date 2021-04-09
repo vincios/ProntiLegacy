@@ -94,6 +94,10 @@ $array = mysqli_fetch_array($ris);
             <td><input type="text" name="cliente" value="<? print $array['cliente'] ?>" maxlength="50"></td>
         </tr>
         <tr>
+            <td><div align="right"><span class="Stile2">Autista</span></div></td>
+            <td><input type="text" name="autista" value="<? print $array['autista'] ?>" maxlength="200"></td>
+        </tr>
+        <tr>
             <td><div align="right"><span class="Stile2">Quintali</span></div></td>
             <td><input type="text" name="quintali" value="<? print $array['quintali'] ?>" maxlength="50"></td>
         </tr>

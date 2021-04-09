@@ -97,17 +97,20 @@ if (isset($_REQUEST['id']))
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
-        <td align="center">&nbsp;</td>
-    </tr>
-    <tr bordercolor="EAEAEA">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td align="center">&nbsp;</td>
     </tr>
     <tr bordercolor="EAEAEA">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td align="center">&nbsp;</td>
+    </tr>
+    <tr bordercolor="EAEAEA">
+        <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -118,19 +121,21 @@ if (isset($_REQUEST['id']))
 </table>
 <table width="100%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
     <tr>
-        <th width="180" bordercolor="999999" align="center"><strong>Deposito</strong></th>
-        <th width="180" bordercolor="999999" align="center"><strong>Cliente</strong></th>
-        <th width="180" bordercolor="999999" align="center"><strong>D.D.S</strong></th>
-        <th width="70" bordercolor="999999" align="center"><strong>Q.li</strong></th>
-        <th width="70" bordercolor="999999" align="center"><strong>Palette</strong></th>
-        <th width="150" bordercolor="999999" align="center"><strong>Note</strong></th>
-        <th width="25" align="center"></th>
+        <th width="18%" bordercolor="999999" align="center"><strong>Deposito</strong></th>
+        <th width="18%" bordercolor="999999" align="center"><strong>Cliente</strong></th>
+        <th width="15%" bordercolor="999999" align="center"><strong>Autista</strong></th>
+        <th width="18%" bordercolor="999999" align="center"><strong>D.D.S</strong></th>
+        <th width="7%" bordercolor="999999" align="center"><strong>Q.li</strong></th>
+        <th width="7%" bordercolor="999999" align="center"><strong>Palette</strong></th>
+        <th width="15%" bordercolor="999999" align="center"><strong>Note</strong></th>
+        <th width="2%" align="center"></th>
     </tr>
     <? while ($array = mysqli_fetch_array($ris)){
         $id = $array['id'];
         $deposito = $array['Deposito'];
         $dds = $array['dds'];
         $cliente = $array['Cliente'];
+        $autista = $array['autista'];
         $quintali = $array['quintali'];
         $palette = $array['palette'];
         $note = $array['note'];
@@ -138,6 +143,7 @@ if (isset($_REQUEST['id']))
         <tr>
             <td width="180" bordercolor="999999" style="font-size:12px"><strong><? print $deposito?></strong></td>
             <td width="180" bordercolor="999999" style="font-size:12px"><a href="modificaProntoMarazzibis.php?id=<? print $id ?>&nome=<? print $deposito?>"><? print $cliente ?></a></td>
+            <td width="150" bordercolor="999999" style="font-size:12px" align="center"><? print $autista ?></td>
             <td width="180" bordercolor="999999" style="font-size:12px"><? print $dds ?></td>
             <td width="70" bordercolor="999999" style="font-size:12px" align="center"><? print $quintali ?></td>
             <td width="70" bordercolor="999999" style="font-size:12px" align="center"><? print $palette ?></td>

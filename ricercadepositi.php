@@ -90,19 +90,20 @@ if ($ok==1)
         <table width="100%"  border="0">
             <tr>
                 <td width="20%" height="24">&nbsp;</td>
+                <td width="15%" height="24">&nbsp;</td>
                 <td width="20%" height="24">&nbsp;</td>
-                <td width="15%" height="30">&nbsp;</td>
-                <td width="15%" height="30">&nbsp;</td>
-                <td width="30%">&nbsp;</td>
+                <td width="10%" height="30">&nbsp;</td>
+                <td width="10%" height="30">&nbsp;</td>
+                <td width="25%">&nbsp;</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td><div align="center" class="Stile4">Risultati Ricerca : <? print $_REQUEST['nome'] ?></div></td>
                 <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td colspan="3"><div align="center" class="Stile4">Risultati Ricerca : <? print $_REQUEST['nome'] ?></div></td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -111,10 +112,11 @@ if ($ok==1)
             </tr>
             <tr>
                 <td align="center" width="20%" style="color:#000066"><strong>DEPOSITO</strong></td>
-                <td align="center" width="20%" style="color:#000066"><strong>CERAMICA</strong></td>
-                <td align="center" width="15%" style="color:#000066"><strong>Q.LI</strong></td>
-                <td align="center" width="115%" style="color:#000066"><strong>PALETTE</strong></td>
-                <td align="center" width="30%" style="color:#000066"><strong>NOTE</strong></td>
+                <td align="center" width="15%" style="color:#000066"><strong>CERAMICA</strong></td>
+                <td align="center" width="20%" style="color:#000066"><strong>Autista</strong></td>
+                <td align="center" width="10%" style="color:#000066"><strong>Q.LI</strong></td>
+                <td align="center" width="10%" style="color:#000066"><strong>PALETTE</strong></td>
+                <td align="center" width="25%" style="color:#000066"><strong>NOTE</strong></td>
             </tr>
             <?
 
@@ -122,6 +124,7 @@ if ($ok==1)
             {
                 $deposito = $array['Deposito'];
                 $ceramica = $array['Ceramica'];
+                $autista = $array['autista'];
                 $quintali = $array['quintali'];
                 $palette = $array['palette'];
                 $note = $array['note'];
@@ -129,6 +132,7 @@ if ($ok==1)
                 <tr>
                     <td style="font-size:12px " align="center"><? print $deposito ?></td>
                     <td style="font-size:12px " align="center"><? print $ceramica ?></td>
+                    <td style="font-size:12px " align="center"><? print $autista ?></td>
                     <td style="font-size:12px " align="center"><? print $quintali ?></td>
                     <td style="font-size:12px " align="center"><? print $palette ?></td>
                     <td style="font-size:12px " align="center"><? print $note ?></td>
@@ -147,19 +151,20 @@ if ($ok==1)
         <table width="100%"  border="0">
             <tr>
                 <td width="20%" height="24">&nbsp;</td>
+                <td width="15%" height="24">&nbsp;</td>
                 <td width="20%" height="24">&nbsp;</td>
-                <td width="15%" height="30">&nbsp;</td>
-                <td width="15%" height="30">&nbsp;</td>
-                <td width="30%">&nbsp;</td>
+                <td width="10%" height="30">&nbsp;</td>
+                <td width="10%" height="30">&nbsp;</td>
+                <td width="25%">&nbsp;</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td><div align="center" class="Stile4">Risultati Ricerca : <? print $_REQUEST['ceramica'] ?></div></td>
+                <td colspan="3"><div align="center" class="Stile4">Risultati Ricerca : <? print $_REQUEST['ceramica'] ?></div></td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -168,10 +173,11 @@ if ($ok==1)
             </tr>
             <tr>
                 <td align="center" width="20%" style="color:#000066"><strong>DEPOSITO</strong></td>
-                <td align="center" width="20%" style="color:#000066"><strong>CLIENTE</strong></td>
-                <td align="center" width="15%" style="color:#000066"><strong>Q.LI</strong></td>
-                <td align="center" width="15%" style="color:#000066"><strong>PALETTE</strong></td>
-                <td align="center" width="30%" style="color:#000066"><strong>NOTE</strong></td>
+                <td align="center" width="15%" style="color:#000066"><strong>CLIENTE</strong></td>
+                <td align="center" width="20%" style="color:#000066"><strong>Autista</strong></td>
+                <td align="center" width="10%" style="color:#000066"><strong>Q.LI</strong></td>
+                <td align="center" width="10%" style="color:#000066"><strong>PALETTE</strong></td>
+                <td align="center" width="25%" style="color:#000066"><strong>NOTE</strong></td>
             </tr>
             <?
 
@@ -179,6 +185,7 @@ if ($ok==1)
             {
                 $deposito = $array['Deposito'];
                 $cliente = $array['Cliente'];
+                $autista = $array['autista'];
                 $quintali = $array['quintali'];
                 $palette = $array['palette'];
                 $note = $array['note'];
@@ -186,6 +193,7 @@ if ($ok==1)
                 <tr>
                     <td style="font-size:12px " align="center"><? print $deposito ?></td>
                     <td style="font-size:12px " align="center"><? print $cliente ?></td>
+                    <td style="font-size:12px " align="center"><? print $autista ?></td>
                     <td style="font-size:12px " align="center"><? print $quintali ?></td>
                     <td style="font-size:12px " align="center"><? print $palette ?></td>
                     <td style="font-size:12px " align="center"><? print $note ?></td>

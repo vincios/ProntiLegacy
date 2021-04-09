@@ -65,7 +65,7 @@ function getHeader($currentCategory) {
         )
     );
 
-    $header = "<ul class='header'>";
+    $header = "<ul class='header no-print'>";
 
 
     foreach ($categories as $key => $category) {

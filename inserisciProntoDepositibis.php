@@ -33,6 +33,7 @@ else
         $_REQUEST['deposito'] = "";
     $_REQUEST['ceramica'] = "";
     $_REQUEST['cliente'] = "";
+    $_REQUEST['autista'] = "";
     $_REQUEST['quintali'] = "";
     $_REQUEST['palette'] = "";
     $_REQUEST['note'] = "";
@@ -109,6 +110,10 @@ else
             <td colspan="4"><input type="text" name="cliente" value="<? print $_REQUEST['cliente'] ?>" maxlength="50"></td>
         </tr>
         <tr>
+            <td><div align="right"><span class="Stile2">Autista</span></div></td>
+            <td colspan="4"><input type="text" name="autista" value="<? print $_REQUEST['autista'] ?>" maxlength="200"></td>
+        </tr>
+        <tr>
             <td><div align="right"><span class="Stile2">Quintali</span></div></td>
             <td colspan="4"><input type="text" name="quintali" value="<? print $_REQUEST['quintali'] ?>" maxlength="50"></td>
         </tr>
@@ -146,12 +151,13 @@ if ($ok == 1){
         $deposito = mysqli_escape_string($db, $deposito);
         $ceramica = mysqli_escape_string($db, strtoupper($_REQUEST['ceramica']));
         $cliente = mysqli_escape_string($db, strtoupper($_REQUEST['cliente']));
+        $autista = mysqli_escape_string($db, strtoupper($_REQUEST['autista']));
         $quintali = mysqli_escape_string($db, $_REQUEST['quintali']);
         $palette = mysqli_escape_string($db, $_REQUEST['palette']);
         $note = mysqli_escape_string($db, $_REQUEST['note']);
 
-//        $query="insert into prontidepositi (Deposito,Ceramica,Cliente,quintali,note) values(\"" . mysqli_escape_string($db, $deposito) . "\",'". mysqli_escape_string($db, $_REQUEST['ceramica']) ."','". mysqli_escape_string($db, $_REQUEST['cliente']) ."','" . mysqli_escape_string($db, $_REQUEST['quintali']) ."','". mysqli_escape_string($db, $_REQUEST['note']) ."')";
-        $query = "INSERT INTO prontidepositi (Deposito,Ceramica,Cliente,quintali,palette,note) VALUES('$deposito', '$ceramica', '$cliente', '$quintali', '$palette', '$note')";
+//		$query="insert into prontidepositi (Deposito,Ceramica,Cliente,quintali, note) values(\"" . mysqli_escape_string($db, $_REQUEST['deposito']) . "\",'". mysqli_escape_string($db, $_REQUEST['ceramica']) ."','". mysqli_escape_string($db, $_REQUEST['cliente']) ."','". mysqli_escape_string($db, $_REQUEST['quintali']) ."','". mysqli_escape_string($db, $_REQUEST['note']) ."')";
+        $query = "INSERT INTO prontidepositi (Deposito, Ceramica, Cliente, autista, quintali, palette, note) VALUES('$deposito', '$ceramica', '$cliente', '$autista','$quintali', '$palette', '$note')";
         mysqli_query($db, $query) or die( mysqli_error($db) );
 
         print '	<script language="javascript">	
