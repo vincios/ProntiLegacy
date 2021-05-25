@@ -143,7 +143,11 @@ if ($ok == 1){
     $ris = mysqli_query($db, $query);
     $n = mysqli_affected_rows($db);
 
-    if ($n>0){
+    if (strlen(trim($_REQUEST['quintali'])) > 0 && !is_numeric($_REQUEST['quintali'])) {
+        print '<script language="javascript">	
+	         alert("Il campo quintali può contenere solo numeri");
+	           </script>';
+    } else if ($n>0){
 
         $deposito = mysqli_escape_string($db, strtoupper($_REQUEST['deposito']));
         $ceramica = mysqli_escape_string($db, strtoupper($_REQUEST['ceramica']));

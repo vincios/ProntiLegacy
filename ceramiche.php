@@ -207,7 +207,7 @@ if($archivio) {
             $ceramica = $array['Ceramica'];
             $cliente = $array['cliente'];
             $autista = $array['autista'];
-            $quintali = $array['quintali'];
+            $quintali = is_numeric($array['quintali']) ? $array['quintali'] : null;
             $palette = $array['palette'];
             $note = $array['note'];
             $indirizzo = $array['indirizzo'];
@@ -365,7 +365,7 @@ if($archivio) {
             $ceramica = $array['Ceramica'];
             $cliente = $array['cliente'];
             $autista = $array['autista'];
-            $quintali = $array['quintali'];
+            $quintali = is_numeric($array['quintali']) ? $array['quintali'] : null;
             $palette = $array['palette'];
             $note = $array['note'];
             $indirizzo = $array['indirizzo'];

@@ -135,8 +135,12 @@ a:active {
 		$query = "SELECT * FROM ragno WHERE nome = '".mysqli_escape_string($db, $deposito)."'";
 		$ris = mysqli_query($db, $query);
 		$n = mysqli_affected_rows($db);
-		
-		if ($n > 0){
+
+        if (strlen(trim($_REQUEST['quintali'])) > 0 && !is_numeric($_REQUEST['quintali'])) {
+            print '<script language="javascript">	
+	         alert("Il campo quintali può contenere solo numeri");
+	           </script>';
+        } else if ($n > 0){
 		$_REQUEST['deposito']=strtoupper($_REQUEST['deposito']);	
 		$_REQUEST['cliente']=strtoupper($_REQUEST['cliente']);
 		$query="insert into prontiragno (Deposito,Cliente,dds,quintali,note) values(\"" . mysqli_escape_string($db, $deposito) . "\",'". mysqli_escape_string($db, $_REQUEST['cliente']) . "','". mysqli_escape_string($db, $_REQUEST['dds']) ."','". mysqli_escape_string($db, $_REQUEST['quintali']) ."','". mysqli_escape_string($db, $_REQUEST['note']) ."')";
