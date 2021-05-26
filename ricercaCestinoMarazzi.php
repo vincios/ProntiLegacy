@@ -146,7 +146,7 @@ if (isset($_GET['Dal']) && isset($_GET['Al'])) {
         $cliente = $array['Cliente'];
         $autista = $array['autista'];
         $dds = $array['dds'];
-        $quintali = $array['quintali'];
+        $quintali = is_numeric($array['quintali']) ? $array['quintali'] : null;;
         $palette = $array['palette'];
         $note = $array['note'];
         $indirizzo = $array['indirizzo'];
